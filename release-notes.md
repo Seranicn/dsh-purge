@@ -1,3 +1,15 @@
+# 1.1.76
+
+## 中文
+
+- 版本 **1.1.76**。适配只走 pnpm 的机器：在 profile 目录 `pnpm add` codeload 压缩包即可，`postinstall` 自动把 `dsh-purge` 写进 `bundles`。
+- 安装地址改成 `codeload.github.com`，避开 `github.com/archive` 的 302（pnpm 会 `fetch failed`）。不要 `pnpm add dsh-purge`（npm 仓库没有这个名字）。
+
+## English
+
+- **1.1.76**. pnpm-only hosts: `pnpm add` the codeload tarball inside the profile; `postinstall` writes `dsh-purge` into `bundles`.
+- Install URL is `codeload.github.com` so pnpm does not die on the `github.com/archive` 302. Do not `pnpm add dsh-purge` — that name is not on the npm registry.
+
 # 1.1.75
 
 ## 中文
