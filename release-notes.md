@@ -1,3 +1,15 @@
+# 1.1.75
+
+## 中文
+
+- 版本 **1.1.75**。修 Hub 市场一键安装报 `already queued: dsh-purge`：`cordis.patch.yml` 不再把已经在 bundles 里的本体再 insert 一遍。
+- README 把安装写成三步：只用 GitHub 压缩包命令，不走插件市场 / `github:` / npm。
+
+## English
+
+- **1.1.75**. Fix Hub one-click `already queued: dsh-purge`: the bundle patch no longer inserts the plugin that is already in `bundles`.
+- README install is three steps: GitHub tarball only; skip the plugin market / `github:` / npm.
+
 # 1.1.74
 
 ## 中文
