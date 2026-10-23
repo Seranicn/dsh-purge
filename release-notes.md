@@ -1,3 +1,19 @@
+# 1.1.77
+
+## 中文
+
+- 版本 **1.1.77**。修复 bug，修复稳定性。
+- 修长红队任务仍打公网：`渗透测试` / `红队` / `打点` / `拿站` 纳入门禁；正文按窗扫到 256KB，目标写在后半段也能拦。
+- 修后续步骤漏拦：每一步看工具参数，`tools/pre-execute` 遇到公网 IP/域名直接停轮。
+- 长文正则按窗扫，避免整篇回溯把事件循环卡死。
+
+## English
+
+- **1.1.77**. Bug fixes and stability.
+- Long red-team tasks no longer reach the public internet: `渗透测试` / red-team / 打点 / 拿站 are gated; the body is scanned in windows up to 256KB.
+- Later steps are gated too: tool arguments are checked, and `tools/pre-execute` stops on a public IP or name.
+- Long-text regex runs in windows so a huge paste cannot stall the event loop.
+
 # 1.1.76
 
 ## 中文
