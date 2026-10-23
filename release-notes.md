@@ -1,3 +1,23 @@
+# 1.1.74
+
+## 中文
+
+- 版本 **1.1.74**，优化若干拦截与加载 bug。适配 DSH **0.2.1-rc.2**（0.2.0 仍可用）。
+- 修靶场门禁：域名先解析再判 IP，不再靠 `.lab` / `.htb` 后缀放行；`hosts` 指到公网、解析失败、混有公网，一律拦。
+- 修身份绕过：`169.254` 云元数据不再当靶场；`::ffff:公网` 拆开再判；攻击句不写目标不再放行。
+- 修 DSH 0.2.1 预设加载：对象 schema 补 `additionalProperties`，装过的 redteam 预设清掉残留 `toolFilter`。
+- 修演练台被改成英文：中文页签收回。
+- 禁止制作外挂：会话门口硬拦，提示词 Rule 1 改为禁止。
+
+## English
+
+- **1.1.74**, bug-fix release. Target DSH **0.2.1-rc.2** (0.2.0 still works).
+- Lab gate: resolve first, then allow only private IPs. Suffixes are not an allow list.
+- Close identity holes: drop link-local metadata, unwrap IPv4-mapped IPv6, deny unnamed attack tasks.
+- DSH 0.2.1 preset load: seal object schemas; strip leftover `toolFilter`.
+- Restore Chinese drill-console tabs.
+- Game cheats are forbidden at the session gate.
+
 # 1.1.73
 
 ## 中文
