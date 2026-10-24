@@ -338,7 +338,7 @@ Success: `profiles/<web|desktop>/node_modules/dsh-purge/package.json` exists. If
 
 ### Uninstall
 
-**dsh-purge** beside the session title → **Clean** → **Uninstall**. Confirm the dialog: it reverts any applied patches, restores the original Harness, and restarts the current host.
+**dsh-purge** beside the session title → **Clean** → **Uninstall**. Confirm the dialog: it reverts any applied patches, restores the original Harness, and restarts the current host. Disable or uninstall also resets an agent-preset default that still points at `redteam` back to `standard`, so the host can create sessions after the preset is gone.
 
 ```sh
 # or from a terminal / chat
