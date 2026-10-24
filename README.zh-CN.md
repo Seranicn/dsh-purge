@@ -182,13 +182,13 @@ cd "$env:USERPROFILE\.dsh\profiles\web"   # 桌面改 profiles\desktop
 pnpm add https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/master
 ```
 
-`pnpm add` 会拉包；`postinstall` 再把 `dsh-purge` 写进 `dsh.profile.bundles`。若加了 `--ignore-scripts`，再跑：
+`pnpm add` 和 `dsh plugin add` 都会拉包；`postinstall` 再把 `dsh-purge` 写进 `dsh.profile.bundles`，并在用户层 `cordis.patch.yml` 补上本体 `insert`（没有这一行，宿主不加载插件，界面没有按钮）。pnpm 11 默认可能拦安装脚本（`ERR_PNPM_IGNORED_BUILDS`），或你加了 `--ignore-scripts`，都要再跑：
 
 ```sh
 node node_modules/dsh-purge/scripts/ensure-profile-bundle.mjs
 ```
 
-成功标志：`node_modules/dsh-purge/package.json` 在，且 profile 的 `bundles` 里有 `"dsh-purge"`。`dsh` 和 pnpm 都没有时走 [手动安装](#manual)。
+成功标志：`node_modules/dsh-purge/package.json` 在，profile 的 `bundles` 里有 `"dsh-purge"`，`cordis.patch.yml` 里有 `id: dsh-purge` 的 insert。`dsh` 和 pnpm 都没有时走 [手动安装](#manual)。
 
 桌面客户端也可以点按钮（`dsh://` 唤起，下的仍是同一份压缩包）：
 
@@ -211,6 +211,8 @@ Web 的按钮只动 Web，桌面的只动桌面。不要在一个里面点另一
 - 会话标题旁有 **dsh-purge**，清洗页能点「应用」。
 - 聊天里 `/purge status` 能打出 `DSH_HOME` 和补丁列表，路径是你正在用的那一份。
 - 没装的可选包（例如梁神）显示跳过，不挡住完成。
+
+没有按钮时，在对应 profile 跑 `dsh --dump-config`（或 `dsh --profile desktop --dump-config`），看有没有本体行 `id: dsh-purge`（不是 `dsh-purge-redteam`）。没有就再跑上面的 `ensure-profile-bundle.mjs`，然后完全退出重开宿主。开头那几条 `entry "redteam-store" not found` 只是旧红队包不在，可以忽略。
 
 ### 市场报 `already queued: dsh-purge` 时
 

@@ -30,8 +30,8 @@
     personaPrefix: ""
     personaSuffix: ""
 
-# 本体已经在 profile.bundles 里入队。这里只改它的 inject/config，再 insert 一次会
-# already queued: dsh-purge（Hub 市场一键装就是这么挂的）。
+# 本体 insert 写在用户层 profile/cordis.patch.yml（postinstall 补）。
+# 这里只改已入队条目的 inject/config。再 insert 一次会 already queued（#152 / #154）。
 - id: dsh-purge
   inject: [systemPrompt, tools]
   config:

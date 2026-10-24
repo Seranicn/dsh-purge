@@ -180,13 +180,13 @@ cd "$env:USERPROFILE\.dsh\profiles\web"   # desktop: profiles\desktop
 pnpm add https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/master
 ```
 
-`pnpm add` fetches the package; `postinstall` writes `dsh-purge` into `dsh.profile.bundles`. If you passed `--ignore-scripts`, run:
+`pnpm add` and `dsh plugin add` fetch the package; `postinstall` writes `dsh-purge` into `dsh.profile.bundles` and adds a body `insert` in the profile `cordis.patch.yml`. Without that insert the host never loads the plugin and no button appears. pnpm 11 may skip install scripts (`ERR_PNPM_IGNORED_BUILDS`); if you also passed `--ignore-scripts`, run:
 
 ```sh
 node node_modules/dsh-purge/scripts/ensure-profile-bundle.mjs
 ```
 
-Success: `node_modules/dsh-purge/package.json` exists and `"dsh-purge"` is in that profile's `bundles`. If neither `dsh` nor pnpm is available, use [Manual install](#manual).
+Success: `node_modules/dsh-purge/package.json` exists, `"dsh-purge"` is in that profile's `bundles`, and `cordis.patch.yml` has an `id: dsh-purge` insert. If neither `dsh` nor pnpm is available, use [Manual install](#manual).
 
 For the desktop client you can also click the button (`dsh://` deep link; it still downloads the same tarball):
 
@@ -209,6 +209,8 @@ Web controls affect Web only; desktop controls affect the desktop app only. Do n
 - **dsh-purge** sits beside the session title, with **Apply** on its Clean page.
 - `/purge status` in chat prints `DSH_HOME` and the patch list — the path should be the home you actually run.
 - Optional packages that are not installed (liangshen) show as skipped and do not block Apply.
+
+If the button is missing, run `dsh --dump-config` (or `dsh --profile desktop --dump-config`) and look for a body row `id: dsh-purge` (not `dsh-purge-redteam`). If it is absent, run `ensure-profile-bundle.mjs` above, then fully quit and reopen the host. `entry "redteam-store" not found` at the top is leftover from an old red-team package and can be ignored.
 
 ### If the market says `already queued: dsh-purge`
 
