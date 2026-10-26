@@ -30,9 +30,10 @@
     personaPrefix: ""
     personaSuffix: ""
 
-# 本体 insert 写在用户层 profile/cordis.patch.yml（postinstall 补）。
-# 这里只改已入队条目的 inject/config。再 insert 一次会 already queued（#152 / #154）。
+# 本体 insert 写在用户层 profile/cordis.patch.yml（postinstall / 演练台自愈补）。
+# 这里只改已入队条目的 inject/config。再 insert 一次会 already queued（#152 / #154 / #159）。
 - id: dsh-purge
+  name: dsh-purge
   inject: [systemPrompt, tools]
   config:
     enabled: true

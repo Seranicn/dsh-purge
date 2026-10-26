@@ -210,7 +210,7 @@ Web controls affect Web only; desktop controls affect the desktop app only. Do n
 - `/purge status` in chat prints `DSH_HOME` and the patch list — the path should be the home you actually run.
 - Optional packages that are not installed (liangshen) show as skipped and do not block Apply.
 
-If the button is missing, run `dsh --dump-config` (or `dsh --profile desktop --dump-config`) and look for a body row `id: dsh-purge` (not `dsh-purge-redteam`). If it is absent, run `ensure-profile-bundle.mjs` above, then fully quit and reopen the host. `entry "redteam-store" not found` at the top is leftover from an old red-team package and can be ignored.
+If the button is missing, run `dsh --dump-config` (or `dsh --profile desktop --dump-config`) and look for a body row `id: dsh-purge` (not `dsh-purge-redteam`). If it is absent, run `ensure-profile-bundle.mjs` above, then fully quit and reopen the host. After this version, a live red-team child entry also writes the missing insert on startup — quit and reopen once more. `entry "redteam-store" not found` at the top is leftover from an old red-team package and can be ignored.
 
 ### If the market says `already queued: dsh-purge`
 
@@ -424,6 +424,10 @@ dsh-purge --edit
 /purge status | apply | revert | uninstall | edit | help
 /rules list | use <id> | create <id> | delete <id> | reset | help
 /rewind
+
+# If another plugin already owns /rewind (or /purge, /rules, /skills), that
+# name is skipped or remounted as /purge-rewind. Other commands, tools, and
+# /dsh-purge/* routes keep working.
 
 purge_status   purge_apply   purge_revert
 ```

@@ -9,15 +9,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  PURGE_NAME as NAME,
+  ensureProfileBodyInsert,
+  profileHasPurgeBodyInsert,
+} from "../lib/profile-insert.js";
 
-const NAME = "dsh-purge";
-
-const INSERT_BLOCK = [
-  "- insert:",
-  "    - id: dsh-purge",
-  "      name: dsh-purge",
-  "",
-].join("\n");
+export { profileHasPurgeBodyInsert };
 
 function readJson(fp) {
   try {
@@ -47,41 +45,14 @@ function findProfileDir() {
   return "";
 }
 
-export function profileHasPurgeBodyInsert(text) {
-  const lines = String(text || "").split(/\r?\n/);
-  let insertIndent = -1;
-  for (const line of lines) {
-    if (/^-\s*insert:\s*$/.test(line) || /^\s+-\s*insert:\s*$/.test(line)) {
-      insertIndent = (line.match(/^[ \t]*/) || [""])[0].length;
-      continue;
-    }
-    if (insertIndent < 0) continue;
-    const indent = (line.match(/^[ \t]*/) || [""])[0].length;
-    const trimmed = line.trim();
-    if (trimmed && indent <= insertIndent && /^-\s/.test(trimmed)) {
-      insertIndent = -1;
-      if (/^-\s*insert:\s*$/.test(trimmed)) {
-        insertIndent = indent;
-      }
-      continue;
-    }
-    if (/^-\s*id:\s*dsh-purge\s*$/.test(trimmed)) return true;
-  }
-  return false;
-}
-
 function ensureProfileInsert(profileDir) {
-  const fp = path.join(profileDir, "cordis.patch.yml");
-  let text = "";
-  try { text = fs.readFileSync(fp, "utf8"); } catch { text = ""; }
-  if (profileHasPurgeBodyInsert(text)) {
-    process.stdout.write(`dsh-purge: insert already in ${fp}\n`);
-    return false;
+  const result = ensureProfileBodyInsert(profileDir);
+  if (result.wrote) {
+    process.stdout.write(`dsh-purge: wrote body insert (${result.path})\n`);
+  } else {
+    process.stdout.write(`dsh-purge: insert already in ${result.path}\n`);
   }
-  const prefix = text && !text.endsWith("\n") ? "\n" : "";
-  fs.writeFileSync(fp, `${text}${prefix}${text ? "\n" : ""}${INSERT_BLOCK}`, "utf8");
-  process.stdout.write(`dsh-purge: wrote body insert (${fp})\n`);
-  return true;
+  return result.wrote;
 }
 
 function main() {
