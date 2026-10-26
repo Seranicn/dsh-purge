@@ -12,6 +12,8 @@ import { fileURLToPath } from "node:url";
 import {
   PURGE_NAME as NAME,
   ensureProfileBodyInsert,
+  ensureProfileBundles,
+  ensurePnpmAllowBuild,
   profileHasPurgeBodyInsert,
 } from "../lib/profile-insert.js";
 
@@ -65,19 +67,15 @@ function main() {
     process.stderr.write(`dsh-purge: cannot read ${fp}\n`);
     process.exit(1);
   }
-  pkg.dsh = pkg.dsh && typeof pkg.dsh === "object" ? pkg.dsh : {};
-  pkg.dsh.profile = pkg.dsh.profile && typeof pkg.dsh.profile === "object" ? pkg.dsh.profile : {};
-  const bundles = Array.isArray(pkg.dsh.profile.bundles) ? pkg.dsh.profile.bundles : [];
-  if (!bundles.includes(NAME)) {
-    pkg.dsh.profile.bundles = [...bundles, NAME];
-    fs.writeFileSync(fp, `${JSON.stringify(pkg, null, 2)}\n`, "utf8");
-    process.stdout.write(`dsh-purge: appended to bundles (${profileDir})\n`);
-  } else {
-    process.stdout.write(`dsh-purge: already in bundles (${profileDir})\n`);
-  }
+  const bundles = ensureProfileBundles(profileDir);
+  process.stdout.write(bundles.wrote
+    ? `dsh-purge: appended to bundles (${profileDir})\n`
+    : `dsh-purge: already in bundles (${profileDir})\n`);
 
   try {
     ensureProfileInsert(profileDir);
+    const pnpm = ensurePnpmAllowBuild(profileDir);
+    if (pnpm.wrote) process.stdout.write(`dsh-purge: allowed pnpm build for ${NAME}\n`);
   } catch (e) {
     process.stderr.write(`dsh-purge: insert failed: ${e && e.message ? e.message : e}\n`);
     process.exit(1);

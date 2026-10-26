@@ -1,3 +1,23 @@
+# 1.1.79
+
+## 中文
+
+- 版本 **1.1.79**。修复 bug，修复稳定性。
+- **#165**：社区版 DS Bot / DeepSeek Bot 按桌面宿主识别（`ds-bot` profile、Electron asar），不再误报 `set DSH_BASE`。
+- **#166**：pnpm 12 拦 `postinstall` 时补 `allowBuilds`，并写清 `--allow-build=dsh-purge` / `approve-builds`。
+- **#167**：升级后补回 `bundles` + 本体 insert，空芯片不再把启动钮藏掉，1.1.74 有的按钮会回来。
+- 应用/还原/卸载进度条跟 job 阶段；主智能体和子智能体同一份注入、权限和能力协议。
+- 新建会话不再把 `dsh-purge` 芯片甩到行尾。
+
+## English
+
+- **1.1.79**. Bug fixes and stability.
+- **#165**: community DS Bot / DeepSeek Bot is a desktop host (`ds-bot` profile, Electron asar); no more false `set DSH_BASE`.
+- **#166**: pnpm 12 skipped `postinstall`; write `allowBuilds` and document `--allow-build=dsh-purge`.
+- **#167**: restore `bundles` + body insert after upgrade so the 1.1.74 button comes back.
+- Apply / revert / uninstall progress follows the job; main and subagents share inject, permission, and capability text.
+- New-session no longer shoves the `dsh-purge` chip to the far right.
+
 # 1.1.78
 
 ## 中文
