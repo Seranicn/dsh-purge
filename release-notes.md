@@ -1,3 +1,23 @@
+# 1.1.80
+
+## 中文
+
+- 版本 **1.1.80**。修复 bug，修复稳定性。
+- **#168**：pnpm 12 的 `allowBuilds` 把 `dsh-purge@codeload...` 也写成 `true`，装别的插件不再留下 `set this to true or false`。
+- **#169**：芯片 / 应用按钮强制系统字体和实色字，不再被宿主图标字体吃掉。
+- **#170**：纯 Node 解 zip 时目录条目建目录，不再写成同名空文件导致 EEXIST。
+- **#172**：`lib/skills.js` 补上 `fs`，#54 软链重叠守卫重新生效。
+- **#176**：写清 **不支持 DSH 0.2.1-rc.3 及更新的 rc**，请退回 **0.2.1-rc.2**。对不上的补丁待应用或跳过，不乱改文件。
+
+## English
+
+- **1.1.80**. Bug fixes and stability.
+- **#168**: pnpm 12 `allowBuilds` also sets `dsh-purge@codeload...` to `true`, so installing other plugins no longer leaves `set this to true or false`.
+- **#169**: chip / Apply buttons force a system font and solid text color so the host icon font cannot hide the label.
+- **#170**: Node zip fallback creates directories for directory entries instead of empty files (no more EEXIST).
+- **#172**: import `fs` in `lib/skills.js` so the #54 symlink overlap guard works again.
+- **#176**: **DSH 0.2.1-rc.3 and newer RCs are not supported.** Stay on **0.2.1-rc.2**. Unmatched patches stay pending or skipped.
+
 # 1.1.79
 
 ## 中文

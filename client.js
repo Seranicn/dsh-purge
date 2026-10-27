@@ -904,7 +904,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 .dshp-pill.is-wait{color:var(--dshp-warn);border-color:color-mix(in srgb,var(--dshp-warn) 30%,var(--dshp-line))}
 .dshp-pill.is-miss{color:var(--dshp-mute)}
 .dshp-pill.is-bad{color:var(--dshp-bad)}
-.dshp-btn{appearance:none;font-family:inherit;font-size:16px;line-height:24px;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:transform 500ms var(--dshp-ease),opacity 300ms var(--dshp-ease)}
+.dshp-btn{appearance:none;font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;font-size:16px;line-height:24px;font-weight:600;padding:8px 12px;border-radius:8px;border:1px solid transparent;cursor:pointer;transition:transform 500ms var(--dshp-ease),opacity 300ms var(--dshp-ease);-webkit-text-fill-color:currentColor;text-indent:0;overflow:visible}
 .dshp-btn:hover:not(:disabled){transform:translateY(-1px)}
 .dshp-btn:active:not(:disabled){transform:scale(0.98)}
 .dshp-btn:disabled{opacity:.45;cursor:not-allowed}
@@ -1083,6 +1083,38 @@ body:not([data-ds-dark-theme]) .dshp-auth-ops button.primary{background:var(--ds
 .dshp-tab-btn:hover{color:var(--dsw-alias-label-primary,currentColor)}
 .dshp-tab-btn.on{color:var(--dsw-alias-brand-primary,#6dbf8c)}
 .dshp-tab-btn.on:after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;border-radius:2px;background:var(--dsw-alias-brand-primary,#6dbf8c)}
+/* 宿主工具条按钮常继承图标字体 / font-size:0 / color:transparent，字在 DOM 里但看不见（#169）。 */
+.dshp-hero-chip-btn,.dshp-tab-btn,.dshp-launch,.dshp-icon-btn,.dshp-hbtn,.dshp-btn,.dshp-dock-tab,.dshp-dock-head button,.dshp-auth-ops button,.dshp-switch button{
+  font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif!important;
+  -webkit-text-fill-color:currentColor!important;
+  text-indent:0!important;
+  letter-spacing:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  width:auto!important;
+  max-width:none!important;
+}
+.dshp-hero-chip-btn{
+  font-size:12.5px!important;
+  line-height:1!important;
+  font-weight:600!important;
+  color:#1a1916!important;
+  -webkit-text-fill-color:#1a1916!important;
+  min-width:max-content!important;
+  height:28px!important;
+  padding:0 12px!important;
+}
+.dshp-hero-chip-btn.on{color:#2f6b4f!important;-webkit-text-fill-color:#2f6b4f!important}
+body[data-ds-dark-theme] .dshp-hero-chip-btn,.dshp-dock[data-theme="dusk"] .dshp-hero-chip-btn{color:#f4f1ea!important;-webkit-text-fill-color:#f4f1ea!important}
+body[data-ds-dark-theme] .dshp-hero-chip-btn.on,.dshp-dock[data-theme="dusk"] .dshp-hero-chip-btn.on{color:#6dbf8c!important;-webkit-text-fill-color:#6dbf8c!important}
+.dshp-tab-btn{font-size:13px!important;line-height:16px!important;font-weight:500!important;color:#5c564c!important;-webkit-text-fill-color:#5c564c!important;padding:0 4px 9px!important}
+.dshp-tab-btn.on{color:#2f6b4f!important;-webkit-text-fill-color:#2f6b4f!important}
+body[data-ds-dark-theme] .dshp-tab-btn{color:#c9c3b8!important;-webkit-text-fill-color:#c9c3b8!important}
+body[data-ds-dark-theme] .dshp-tab-btn.on{color:#6dbf8c!important;-webkit-text-fill-color:#6dbf8c!important}
+.dshp-launch{font-size:13px!important;line-height:1!important;font-weight:600!important;min-width:max-content!important}
+.dshp-btn{font-size:16px!important;line-height:24px!important;font-weight:600!important}
+.dshp-btn-primary{color:#fff!important;-webkit-text-fill-color:#fff!important}
+.dshp-btn-tiny{font-size:14px!important;line-height:20px!important}
 /* Glass follows the host color. Weight and background opacity are kept separate: the shell is translucent, the text sits on a more solid layer. */
 .dshp-dock{font-family:inherit;font-size:14px;line-height:1.6;font-weight:500;-webkit-font-smoothing:antialiased;text-shadow:none}
 .dshp-dock[data-theme="white"],.dshp-dock[data-theme="dusk"]{backdrop-filter:blur(22px) saturate(1.4)!important;-webkit-backdrop-filter:blur(22px) saturate(1.4)!important;color:var(--dshp-ink)!important;border:1px solid color-mix(in srgb,var(--dsw-alias-brand-primary,#6d8f78) 34%,transparent)!important;--dshp-glass:blur(18px) saturate(1.35);--dshp-accent:var(--dsw-alias-brand-primary,#3d8f68);--dshp-fill:color-mix(in srgb,var(--dsw-alias-brand-primary,#6dbf8c) 14%,transparent)}
@@ -3677,9 +3709,9 @@ body[data-ds-dark-theme] .dshp-rewind-item span{color:var(--dsw-alias-label-tert
 .rt-dot{width:8px;height:8px;border-radius:50%;background:var(--dsw-alias-brand-primary)}
 .rt-spacer{flex:1}
 .rt-btn{border:1px solid var(--dsw-alias-border-l1);background:var(--dsw-alias-bg-layer-2);color:inherit;
-  border-radius:6px;padding:3px 9px;font-size:12px;cursor:pointer;font-family:inherit;white-space:nowrap}
+  border-radius:6px;padding:3px 9px;font-size:12px;cursor:pointer;font-family:system-ui,-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;white-space:nowrap;-webkit-text-fill-color:currentColor;overflow:visible}
 .rt-btn:hover{border-color:var(--dsw-alias-border-l2)}
-.rt-btn-primary{background:var(--dsw-alias-brand-primary);border-color:var(--dsw-alias-brand-primary);color:#fff}
+.rt-btn-primary{background:var(--dsw-alias-brand-primary);border-color:var(--dsw-alias-brand-primary);color:#fff;-webkit-text-fill-color:#fff}
 .rt-btn-primary:hover{opacity:.9}
 .rt-btn:disabled{opacity:.5;cursor:default}
 .rt-tabs{display:flex;flex-wrap:wrap;gap:2px;padding:6px 12px 0;border-bottom:1px solid var(--dsw-alias-border-l1)}
