@@ -1,3 +1,19 @@
+# 1.1.81
+
+## 中文
+
+- 版本 **1.1.81**。修复 bug，修复稳定性。
+- **#174**：识别 DSH NEXT 社区桌面（路径、进程、快捷方式、密封 asar）。`DSH_SURFACE=web` 也不再误报；不把任意 `app.asar` 当桌面。
+- **#175**：补 ip / 计分 / settle 单测，删草稿文档和 `.bak`。`npm test` 23 条全过。
+- **#171 / #173**：zip 目录条目和 skills `fs` 导入已在 1.1.80，本版用单测锁住。
+
+## English
+
+- **1.1.81**. Bug fixes and stability.
+- **#174**: detect DSH NEXT desktop (paths, process, shortcuts, sealed asar). Still desktop when `DSH_SURFACE=web`. A random `app.asar` is not treated as the host.
+- **#175**: add ip / score / settle tests; drop draft docs and `.bak`. `npm test` is 23/23 green.
+- **#171 / #173**: zip directory entries and the skills `fs` import shipped in 1.1.80; this release locks them with tests.
+
 # 1.1.80
 
 ## 中文
