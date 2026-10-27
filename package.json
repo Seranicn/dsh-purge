@@ -36,7 +36,8 @@
   "scripts": {
     "embed-prompt": "node scripts/embed-default-prompt.mjs",
     "build:client": "node scripts/build-client.mjs",
-    "postinstall": "node scripts/ensure-profile-bundle.mjs"
+    "postinstall": "node scripts/ensure-profile-bundle.mjs",
+    "test": "node --test"
   },
   "license": "Apache-2.0",
   "keywords": [
