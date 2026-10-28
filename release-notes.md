@@ -1,3 +1,23 @@
+# 1.1.82
+
+## 中文
+
+- 版本 **1.1.82**。修复 bug，修复稳定性。
+- **#180**：修复 profile 的 `pnpm-workspace.yaml` `allowBuilds` 被反复写坏（`dsh-purge@https: true` 畸形键 → `ERR_PNPM_INVALID_VERSION_UNION`，重复键 → `duplicated mapping key`）。
+  - URL 键解析不再被冒号截断；写回含 `://` 的键自动加引号。
+  - 重写只保留精确等于期望键的 `dsh-purge@*`，旧污染键（畸形的、过期的版本/commit URL）自动清掉，不用手工修。
+  - 期望键优先从 profile 的 `pnpm-lock.yaml` 读实际解析的 tarball URL（固定 commit 安装也不再有双 URL 键），读不到才退回 `package.json`。
+  - 重写结果先过最小 YAML 校验（键不重复、round-trip 无损），不过就不写盘；健康文件零写入，启动不再反复重写。
+
+## English
+
+- **1.1.82**. Bug fixes and stability.
+- **#180**: stop rewriting the profile `pnpm-workspace.yaml` `allowBuilds` into garbage (`dsh-purge@https: true` malformed key → `ERR_PNPM_INVALID_VERSION_UNION`; duplicated keys → `duplicated mapping key`).
+  - URL keys no longer truncate at the first colon; keys containing `://` are written back quoted.
+  - Rewrites keep only `dsh-purge@*` keys exactly equal to the wanted set; stale polluted keys (malformed, old version/commit URLs) self-heal away on the next ensure.
+  - The wanted key prefers the tarball URL actually resolved in the profile `pnpm-lock.yaml` (fixed-commit installs no longer get a duplicate URL key); falls back to `package.json`.
+  - Rewritten output passes a minimal YAML check first (no duplicate keys, lossless round-trip); healthy files are never written again, so boot no longer rewrites each run.
+
 # 1.1.81
 
 ## 中文
