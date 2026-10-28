@@ -144,30 +144,39 @@ Harness は単にプロンプトを転送するだけではありません。プ
 
 ## インストール
 
-以下の 3 ステップに従ってください。**プラグインマーケットプレイスは使わないでください。** [dsh-plugin.org](https://dsh-plugin.org) や 設定 → プラグインマーケット でのワンクリックインストールは `already queued: dsh-purge` で失敗し、コマンドを実行しません。`dsh-purge` という名前は npm レジストリにありません。`pnpm add dsh-purge` はしないでください。このマシンに pnpm しかない場合は、ステップ 2 の pnpm URL を使ってください。
+**プラグインマーケットプレイスは使わないでください。** [dsh-plugin.org](https://dsh-plugin.org) や 設定 → プラグインマーケット でのワンクリックインストールは `already queued: dsh-purge` で失敗し、コマンドを実行しません。`dsh-purge` という名前は npm レジストリにないので、`pnpm add dsh-purge` はしないでください。
 
-### 1. どのホストを実行していますか？
+### クイックスタート
 
-公式 `dsh web` と公式デスクトップ EXE は **別々に** インストール・パッチされます。実際に開くホストにのみインストールしてください。
-
-| 実行するもの | プロファイル | コマンド |
-|---|---|---|
-| 公式 `dsh web` | `web` | 下記の 1 つ目のコマンド |
-| 公式デスクトップ EXE | `desktop` | 下記の 2 つ目のコマンド |
-
-### 2. プロファイルに追加（`dsh` または pnpm のみ）
-
-`codeload.github.com` を使ってください。`github.com/.../archive` は使わないでください。その 302 により pnpm が `fetch failed` で失敗します。
-
-**`dsh` がある場合:**
+PATH に `dsh` があれば、コマンド 1 つ、再起動 1 回、クリック 1 回。自分が開いているホストのコマンドをそのまま実行します（デスクトップ EXE は `web` の代わりに `desktop`）:
 
 ```sh
+# 公式 `dsh web`
 dsh plugin --profile web add https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/master
+
+# 公式デスクトップ EXE
+dsh plugin --profile desktop add https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/master
 ```
 
-EXE の場合は `web` の代わりに `desktop` を使います。このディレクトリがすでにクローンなら、URL の代わりに `.` を使います。
+1. インストールしたホストを **完全に終了して再起動** します。Web: `dsh web` を停止して起動し直す。デスクトップ: トレイアイコンも終了してから exe を開く。
+2. そのホストで、セッションタイトルの横の **dsh-purge** → **Clean** → **Apply** をクリック。成功した Apply は 1 回だけ再起動します。
 
-**pnpm のみ（`dsh` 不要）:** リポジトリのルートではなく、実際に使うプロファイル内で実行してください。
+完了 — チャットで `/purge status` を実行して確認します。pnpm がビルド許可を尋ねてきた場合や、下記の何かが現れない場合は、この後のステップ別の手順に進んでください。
+
+### ステップバイステップ
+
+**ステップ 1 — 使うホストを選ぶ。** 公式 `dsh web` と公式デスクトップ EXE は **別々に** インストール・パッチされます。実際に開くホストにのみインストールしてください。
+
+| 実行するもの | プロファイル | インストールコマンド |
+|---|---|---|
+| 公式 `dsh web` | `web` | クイックスタートの `web` の行 |
+| 公式デスクトップ EXE | `desktop` | クイックスタートの `desktop` の行 |
+
+**ステップ 2 — プラグインを入れる。** 圧縮パッケージの URL は `codeload.github.com` の書き方そのままにしてください。`github.com/.../archive` は使わないでください。その 302 により pnpm が `fetch failed` で失敗します。
+
+`dsh` がある場合: クイックスタートの自分のプロファイルの行を実行します。このディレクトリがすでにクローンなら、URL の代わりに `.` を使います。
+
+pnpm のみ（`dsh` 不要）: リポジトリのルートではなく、実際に使うプロファイル内で実行してください。
 
 ```sh
 cd "$DSH_HOME/profiles/web"    # desktop: profiles/desktop
@@ -181,7 +190,11 @@ cd "$env:USERPROFILE\.dsh\profiles\web"   # desktop: profiles\desktop
 pnpm add https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/master
 ```
 
-`pnpm add` と `dsh plugin add` はパッケージを取得します。`postinstall` が `dsh-purge` を `dsh.profile.bundles` に書き込み、プロファイルの `cordis.patch.yml` に body `insert` を追加します。その insert がないとホストはプラグインを読み込まず、ボタンも現れません。pnpm 11/12 はビルドを許可しないとインストールスクリプトをスキップします（`ERR_PNPM_IGNORED_BUILDS`）:
+`pnpm add` と `dsh plugin add` はパッケージを取得します。`postinstall` が `dsh-purge` を `dsh.profile.bundles` に書き込み、プロファイルの `cordis.patch.yml` に body `insert` を追加します。その insert がないとホストはプラグインを読み込まず、ボタンも現れません。
+
+**完了の目安:** `node_modules/dsh-purge/package.json` が存在し、そのプロファイルの `bundles` に `"dsh-purge"` があり、`cordis.patch.yml` に `id: dsh-purge` の insert があること。
+
+- pnpm 11/12 はビルドを許可しないとインストールスクリプトをスキップします（`ERR_PNPM_IGNORED_BUILDS`）:
 
 ```sh
 pnpm add --allow-build=dsh-purge --allow-build=dsh-purge@https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/master https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/master
@@ -191,35 +204,25 @@ pnpm approve-builds dsh-purge@https://codeload.github.com/YuJunZhiXue/dsh-purge/
 node node_modules/dsh-purge/scripts/ensure-profile-bundle.mjs
 ```
 
-成功: `node_modules/dsh-purge/package.json` が存在し、そのプロファイルの `bundles` に `"dsh-purge"` があり、`cordis.patch.yml` に `id: dsh-purge` の insert があること。`dsh` も pnpm も使えない場合は [手動インストール](#手動) を使ってください。
-
-デスクトップクライアントではボタンをクリックすることもできます（`dsh://` ディープリンク。同じ tarball をダウンロードします）:
+- `dsh` も pnpm も使えない場合は [手動インストール](#手動) に進んでください。
+- デスクトップクライアントではボタンをクリックすることもできます（`dsh://` ディープリンク。同じ tarball をダウンロードします）。
 
 <p align="center">
   <a href="dsh://plugin/install?id=dsh-purge&name=dsh-purge&version=1.1.81&repo=YuJunZhiXue%2Fdsh-purge&permissions=%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA%E8%AF%8D%E6%B3%A8%E5%85%A5%2C%E6%9C%AC%E6%9C%BA%E8%A1%A5%E4%B8%81%2C%E8%AE%BE%E7%BD%AE%E9%A1%B5&downloadUrl=https%3A%2F%2Fcodeload.github.com%2FYuJunZhiXue%2Fdsh-purge%2Ftar.gz%2Frefs%2Fheads%2Fmaster"><strong>デスクトップクライアントでインストール</strong></a>
 </p>
 
-### 3. コマンドのあと、あと 3 クリック
+**ステップ 3 — ホストを再起動する。** プラグインをプロファイルに追加しただけでは、`@deepseek-ai` にパッチは当たりません。インストールしたホストを完全に終了して再起動します（Web: `dsh web` を停止して起動し直す。デスクトップ: トレイアイコンも終了してから exe を開く）。
 
-プラグインをプロファイルに追加しただけでは、`@deepseek-ai` にパッチは当たりません。
+**完了の目安:** セッションタイトルの横に **dsh-purge** がある。見当たらない場合はステップ 5 へ。
 
-1. インストールしたホストを **完全に終了して再起動** します。Web: `dsh web` を停止して起動し直す。デスクトップ: トレイアイコンも終了してから exe を開く。
-2. **そのホスト** で、セッションタイトルの横の **dsh-purge** をクリックし、**Clean** を開いて **Apply** をクリック。ホストの設定ページにはありません。
-3. 成功した **Apply** は 1 回だけ再起動します。完了しなかった場合は再起動しません。
+**ステップ 4 — Apply して確認。** **そのホスト** で、セッションタイトルの横の **dsh-purge** をクリックし、**Clean** を開いて **Apply** をクリック。ホストの設定ページにはありません。成功した **Apply** は 1 回だけ再起動します。完了しなかった場合は再起動しません。Web のコントロールは Web のみに、デスクトップのコントロールはデスクトップアプリのみに作用します。片方のホストからもう片方を Apply しないでください。
 
-Web のコントロールは Web のみに、デスクトップのコントロールはデスクトップアプリのみに作用します。片方のホストからもう片方を Apply しないでください。
+**完了の目安:** チャットで `/purge status` を打つと `DSH_HOME` とパッチ一覧が表示され、パスは実際に実行しているホームであること。インストールされていないオプションパッケージ（liangshen）は skipped と表示され、Apply を妨げません。
 
-### インストールされたか確認する
+**ステップ 5 — トラブルシューティング。** 上のステップが「完了の目安」で終わらなかったときだけ読むセクションです。
 
-- **dsh-purge** がセッションタイトルの横にあり、その Clean ページに **Apply** がある。
-- チャットで `/purge status` を打つと `DSH_HOME` とパッチ一覧が表示される — パスは実際に実行しているホームであるべき。
-- インストールされていないオプションパッケージ（liangshen）は skipped と表示され、Apply を妨げません。
-
-ボタンが見当たらない場合は `dsh --dump-config`（または `dsh --profile desktop --dump-config`）を実行し、body 行に `id: dsh-purge`（`dsh-purge-redteam` ではない）があるか確認します。無ければ上記の `ensure-profile-bundle.mjs` を実行し、ホストを完全に終了して再起動します。このバージョン以降は、起動時にライブのレッドチーム子エントリが欠けている insert も書き込みます — もう一度終了・再起動してください。先頭の `entry "redteam-store" not found` は古いレッドチームパッケージの名残で、無視して構いません。
-
-### マーケットが `already queued: dsh-purge` と言う場合
-
-マーケットのクリックをやめてください。ステップ 2 の `dsh plugin add` か pnpm を再度使います。CLI もすでにあると言う場合:
+- **セッションタイトルの横にボタンが無い。** `dsh --dump-config`（または `dsh --profile desktop --dump-config`）を実行し、body 行に `id: dsh-purge`（`dsh-purge-redteam` ではない）があるか確認します。無ければステップ 2 の `ensure-profile-bundle.mjs` を実行し、ホストを完全に終了して再起動します。このバージョン以降は、起動時にライブのレッドチーム子エントリが欠けている insert も書き込みます — もう一度終了・再起動してください。先頭の `entry "redteam-store" not found` は古いレッドチームパッケージの名残で、無視して構いません。
+- **マーケットが `already queued: dsh-purge` と言う。** マーケットのクリックをやめてください。ステップ 2 の `dsh plugin add` か pnpm を再度使います。CLI もすでにあると言う場合は、先に削除してから入れ直し、ステップ 3 をやり直します:
 
 ```sh
 dsh plugin --profile desktop remove dsh-purge
@@ -234,11 +237,11 @@ pnpm remove dsh-purge
 pnpm add https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/master
 ```
 
-Web では `desktop` を `web` に置き換えます。その後ステップ 3 を行います。
+Web では `desktop` を `web` に置き換えます。
 
-### アシスタントに任せる
+### その他
 
-以下のブロックをローカルアシスタントに貼ってください。実行すべきはインストールコマンドのみです — ディスクスキャン、ほかの編集、Apply、再起動はしません。
+**アシスタントに任せる。** 以下のブロックをローカルアシスタントに貼ってください。実行すべきはインストールコマンドのみです — ディスクスキャン、ほかの編集、Apply、再起動はしません。
 
 <details>
 <summary><strong>AI アシスタント向け（インストールのみ）</strong></summary>
@@ -271,9 +274,7 @@ pnpm add https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/mas
 
 <a id="手動"></a>
 
-### 手動インストール
-
-コマンドが失敗する場合、または `dsh` が PATH に無い場合に使います。**実行するホストのプロファイルだけ** を編集してください — もう片方には触れず、既存の bundles を削除しないでください。
+**手動インストール。** コマンドが失敗する場合、または `dsh` が PATH に無い場合に使います。**実行するホストのプロファイルだけ** を編集してください — もう片方には触れず、既存の bundles を削除しないでください。
 
 <details>
 <summary><strong>完全な手動手順</strong></summary>
@@ -339,13 +340,14 @@ pnpm install
 
 成功: `profiles/<web|desktop>/node_modules/dsh-purge/package.json` が存在すること。`pnpm` が無い場合は公式 `dsh` に同梱の Node / pnpm を使います。`Could not resolve` の場合は `file:` パスを再確認、JSON エラーの場合はカンマを直すかバックアップを復元します。
 
-**5. そのホストを完全に終了して再起動し、Apply** — 上記と同じ 3 ステップです。カードはセッションタイトルの横に現れます。そのホストでのみ **Apply**（または `/purge apply`）をクリック。カードが無ければ、おそらく別の `.dsh` を編集しています — ステップ 1 に戻ってください。
+**5. そのホストを完全に終了して再起動し、Apply** — 上のステップ 3 とステップ 4 です。カードはセッションタイトルの横に現れます。そのホストでのみ **Apply**（または `/purge apply`）をクリック。カードが無ければ、おそらく別の `.dsh` を編集しています — 手順 1 に戻ってください。
 
 </details>
 
-### アンインストール
+**アンインストール。** セッションタイトル横の **dsh-purge** → **Clean** → **Uninstall**。ダイアログを確認: 適用済みパッチを元に戻し、元の Harness を復元し、現在のホストを再起動します。無効化やアンインストールは、まだ `redteam` を指しているエージェントプリセットのデフォルトも `standard` に戻すので、プリセットが消えた後もホストはセッションを作成できます。
 
-セッションタイトル横の **dsh-purge** → **Clean** → **Uninstall**。ダイアログを確認: 適用済みパッチを元に戻し、元の Harness を復元し、現在のホストを再起動します。無効化やアンインストールは、まだ `redteam` を指しているエージェントプリセットのデフォルトも `standard` に戻すので、プリセットが消えた後もホストはセッションを作成できます。
+<details>
+<summary><strong>アンインストールのコマンドと設定</strong></summary>
 
 ```sh
 # またはターミナル / チャットから
@@ -368,6 +370,8 @@ dsh-purge --uninstall
         postPromptOrder: 5100
         postPrompt: ""
 ```
+
+</details>
 
 ---
 
