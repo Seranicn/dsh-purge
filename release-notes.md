@@ -1,3 +1,39 @@
+# 1.1.84
+
+## 中文
+
+- 版本 **1.1.84**。
+- **尾部锚点与子代理审批接管**（接线 `anchor.js` / `subagent-control.js`）：
+  - 锚点段物理追加到 system prompt 的 sections 数组末尾（waterfall 按数组顺序渲染，order 不参与排序），把身份与格式规则放回 recency 位；已有同名段先滤再追加，不会出现两份。
+  - 锚点规则改为跟随操作者语言：中文请求回中文，锚点本身是英文不算语言指令；删掉写死的英文开头句（这是红队模式回答变英文的直接原因）。
+  - 子会话被宿主写成 `approval/policy = "never"` 时改回 `ask`，并在 `approval/request` 瀑布放行，子代理不再"一直被拒"。
+  - 回滚开关：`anchorMode: "off"`、`subagentControl: false`。
+- **红队模式中文化**：模式名与描述、角色名、五阶段攻击链、25 项计分规则与 POC 分类、技能修复说明、环境适配提示、面板与服务端报错、成果报告与成果复现报告全部回中文。
+- **#194**：desktop 端启动后窗口永不显示。
+  - hung-operator 提示改为按内容变更缓存（home + mtime + 已提交修订号），内容没变不再每轮重算约 23KB。
+  - 增加风暴熔断（10 秒 120 次）与慢调用熔断（1.5 秒触发、30 秒冷却），熔断期直接返回缓存文本，不挂死 desktop host。
+  - 同一次 assemble 的重复改写用 WeakMap 去重。
+  - 新增补丁 **#91**：宿主 `code === null || signal` 静默 resolve 前写一条 `[desktop.hostExit]` 到 `%TEMP%\dsh-purge-desktop.log`，保持不弹框但有据可查。
+- **#188（0.2.1-rc.4 专属部分）**：新增 **#89** 沙箱策略去品牌、**#90** skill-badge 描述中文化，扩展 **#32/#53** 的 rc.3 变体与 marker；三条新补丁均为 optional，宿主没有对应文件时静默跳过。
+- 测试：81/81 通过；新增锚点接线与红队文案测试。
+
+## English
+
+- **1.1.84**.
+- **Tail anchor and subagent approval takeover** (wiring `anchor.js` / `subagent-control.js`):
+  - The anchor section is physically appended to the end of the system-prompt sections array (the waterfall renders by array order, not by `order`), putting identity and format rules back in the recency slot; any existing same-named section is filtered first so there is never a duplicate.
+  - Anchor rules now follow the operator's language: a Chinese request gets a Chinese answer, and the anchor being written in English is not a language instruction. The hard-coded English opener was removed (the direct cause of red-team mode answering in English).
+  - When the host writes `approval/policy = "never"` for a child session, it is flipped back to `ask` and allowed in the `approval/request` waterfall, so subagents are no longer refused every time.
+  - Rollback switches: `anchorMode: "off"`, `subagentControl: false`.
+- **Red-team mode localized to Chinese**: mode name and description, role names, the five-stage attack chain, the 25-item scoring rules and POC categories, skill-fix guidance, environment-adaptation hints, panel and server messages, and both the results report and the replay report.
+- **#194**: desktop window never appears after launch.
+  - The hung-operator prompt is now cached by content change (home + mtime + committed revision); an unchanged prompt is no longer rebuilt (~23KB) on every refresh.
+  - Storm breaker (120 calls / 10s) and slow-call breaker (trip at 1.5s, 30s cooldown) return the cached text instead of stalling the desktop host.
+  - Duplicate rewrites within the same assemble call are deduped with a WeakMap.
+  - New patch **#91**: before the host silently resolves `code === null || signal`, append a `[desktop.hostExit]` line to `%TEMP%\dsh-purge-desktop.log` — still no dialog, but no longer invisible.
+- **#188 (0.2.1-rc.4-specific parts)**: new **#89** sandbox-policy brand neutralization and **#90** skill-badge description localization, plus rc.3 variants and markers for **#32/#53**; all three new patches are optional and are skipped silently when the host has no matching file.
+- Tests: 81/81 pass; new coverage for anchor wiring and red-team copy.
+
 # 1.1.83
 
 ## 中文
