@@ -1,3 +1,29 @@
+# 1.1.83
+
+## 中文
+
+- 版本 **1.1.83**。修复 bug，修复稳定性。
+- **#185**：修复 pnpm 11（DSH 内置 11.2.2）下 `pnpm install` 因 `allowBuilds` 崩溃的问题。
+  - 之前 profile 的 `pnpm-workspace.yaml` 会写入 `dsh-purge@https://...` 这类 URL 键，pnpm 把它当版本联合解析，直接报 `[ERR_PNPM_INVALID_VERSION_UNION] Invalid versions union`。
+  - 现在只写裸包名 `dsh-purge`：pnpm 的 `allowBuilds` 本来就按包名匹配，tarball / git / registry 三种安装形态都放行。
+  - 自愈加强：所有 `dsh-purge@*` 历史键（URL 键、旧截断键 `dsh-purge@https`、`@1.1.81` 之类版本键）一律清掉，只保留裸包名；非 dsh-purge 的键原样保留。
+- **#191**：修复 macOS DSH Desktop（0.2.1-rc.4）启动崩溃 `failed to parse overlay .../cordis.patch.yml`。
+  - 宿主生成的 profile 层 `cordis.patch.yml` 可能整体只有一个空 flow 序列 `[]`，那本身就是一个完整 YAML 文档；再往文件尾追加 `- insert:` 会变成第二个文档，宿主解析直接失败。
+  - 现在写之前先判断数据部分形态：空 flow 序列（`[]`，可带 `---` 前缀）→ **替换** `[]` 整行而不是追加；空文件 / 只有注释 → 直接写 insert 块；正常块序列 → 沿用原来的追加行为。
+  - 非空 flow 序列（宿主或用户自己的内容）认不准就不动，返回 `{ ok: false, wrote: false }`，宁可留着也不写坏。
+
+## English
+
+- **1.1.83**. Bug fixes and stability.
+- **#185**: fix `pnpm install` crashing under pnpm 11 (11.2.2, bundled with DSH) because of `allowBuilds`.
+  - The profile `pnpm-workspace.yaml` used to get a `dsh-purge@https://...` URL key, which pnpm parses as a version union and rejects with `[ERR_PNPM_INVALID_VERSION_UNION] Invalid versions union`.
+  - Now only the bare package name `dsh-purge` is written: pnpm matches `allowBuilds` by package name, so tarball / git / registry installs are all allowed.
+  - Stronger self-healing: every `dsh-purge@*` legacy key (URL keys, truncated `dsh-purge@https`, `@1.1.81`-style version keys) is dropped and only the bare name is kept; non-dsh-purge keys are preserved as-is.
+- **#191**: fix the macOS DSH Desktop (0.2.1-rc.4) startup crash `failed to parse overlay .../cordis.patch.yml`.
+  - The host-generated profile `cordis.patch.yml` may consist of a single empty flow sequence `[]`, which is already a complete YAML document; appending `- insert:` after it creates a second document and the host fails to parse it.
+  - The data shape is now detected before writing: an empty flow sequence (`[]`, optionally `---`-prefixed) → **replace** the `[]` line instead of appending; empty file / comments only → write the insert block; a normal block sequence → the previous append behaviour is kept.
+  - A non-empty flow sequence (host or user content) is left alone and returns `{ ok: false, wrote: false }` — better to skip than to write something broken.
+
 # 1.1.82
 
 ## 中文

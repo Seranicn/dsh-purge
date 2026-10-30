@@ -10,6 +10,9 @@ import {
   purgePnpmBuildSpecs,
   rewritePnpmAllowBuilds,
   ensurePnpmAllowBuild,
+  ensureProfileBodyInsert,
+  classifyPatchBody,
+  INSERT_BLOCK,
 } from "../lib/profile-insert.js";
 
 const MASTER_URL = "https://codeload.github.com/YuJunZhiXue/dsh-purge/tar.gz/refs/heads/master";
@@ -21,6 +24,26 @@ function withTempProfile(lockText) {
     fs.writeFileSync(path.join(dir, "pnpm-lock.yaml"), lockText, "utf8");
   }
   return dir;
+}
+
+function withTempPatch(content) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "dsh-purge-patch-"));
+  if (content !== undefined) {
+    fs.writeFileSync(path.join(dir, "cordis.patch.yml"), content, "utf8");
+  }
+  return dir;
+}
+
+/** 去掉注释和空行后，统计顶层 `- insert:` 组数（判定是不是第二个文档）。 */
+function topLevelInsertGroups(text) {
+  const lines = String(text || "").split(/\r?\n/);
+  let count = 0;
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    if (/^-\s*insert:\s*$/.test(line)) count += 1;
+  }
+  return count;
 }
 
 test("URL 键解析不被冒号截断", () => {
@@ -233,3 +256,105 @@ test("幂等：第二次 ensure 不再写盘（自愈后收敛）", () => {
   assert.equal(fs.readFileSync(fp, "utf8"), healed);
 });
 
+// ---- #191：cordis.patch.yml 是 `[]` 时追加会导致宿主启动解析失败 ----
+
+test("patch 形态分类：空 / 空 flow / 块序列 / 非空 flow / 未知", () => {
+  assert.equal(classifyPatchBody("").kind, "empty");
+  assert.equal(classifyPatchBody("# 只有注释\n\n").kind, "empty");
+  assert.equal(classifyPatchBody("[]").kind, "empty-flow");
+  assert.equal(classifyPatchBody("# c\n[]\n").kind, "empty-flow");
+  assert.equal(classifyPatchBody("---\n[]\n").kind, "empty-flow");
+  assert.equal(classifyPatchBody("- id: foo\n  name: foo\n").kind, "block-seq");
+  assert.equal(classifyPatchBody("[a, b]\n").kind, "flow-seq");
+  assert.equal(classifyPatchBody("foo: bar\n").kind, "unknown");
+});
+
+test("空文件：直接写 insert 块", () => {
+  const dir = withTempPatch(undefined);
+  const fp = path.join(dir, "cordis.patch.yml");
+  const result = ensureProfileBodyInsert(dir);
+  assert.equal(result.ok, true);
+  assert.equal(result.wrote, true);
+  assert.equal(fs.readFileSync(fp, "utf8"), INSERT_BLOCK);
+});
+
+test("只有注释和空行：写 insert 块，注释保留", () => {
+  const dir = withTempPatch("# overrides, disables, and insertions\n\n");
+  const fp = path.join(dir, "cordis.patch.yml");
+  const result = ensureProfileBodyInsert(dir);
+  assert.equal(result.ok, true);
+  assert.equal(result.wrote, true);
+  const text = fs.readFileSync(fp, "utf8");
+  assert.equal(text.includes("# overrides, disables, and insertions"), true);
+  assert.equal(text.includes("- insert:"), true);
+  assert.equal(topLevelInsertGroups(text), 1);
+});
+
+test("注释 + `[]`：`[]` 被替换成 insert 块，注释保留，无第二个文档", () => {
+  const dir = withTempPatch("# overrides, disables, and insertions\n[]\n");
+  const fp = path.join(dir, "cordis.patch.yml");
+  const result = ensureProfileBodyInsert(dir);
+  assert.equal(result.ok, true);
+  assert.equal(result.wrote, true);
+  const text = fs.readFileSync(fp, "utf8");
+  assert.equal(text.includes("[]"), false);
+  assert.equal(text.includes("# overrides, disables, and insertions"), true);
+  assert.equal(text.includes("- insert:"), true);
+  // 只有一个顶层 `- insert:` 组 → 没有变成第二个文档
+  assert.equal(topLevelInsertGroups(text), 1);
+});
+
+test("`---` 前缀 + `[]`：同样替换，无第二个文档", () => {
+  const dir = withTempPatch("---\n[]\n");
+  const fp = path.join(dir, "cordis.patch.yml");
+  const result = ensureProfileBodyInsert(dir);
+  assert.equal(result.ok, true);
+  assert.equal(result.wrote, true);
+  const text = fs.readFileSync(fp, "utf8");
+  assert.equal(text.includes("[]"), false);
+  assert.equal(topLevelInsertGroups(text), 1);
+});
+
+test("正常块序列：沿用旧的追加行为", () => {
+  const original = "- id: foo\n  name: foo\n";
+  const dir = withTempPatch(original);
+  const fp = path.join(dir, "cordis.patch.yml");
+  const result = ensureProfileBodyInsert(dir);
+  assert.equal(result.ok, true);
+  assert.equal(result.wrote, true);
+  const text = fs.readFileSync(fp, "utf8");
+  assert.equal(text.startsWith(original), true);
+  assert.equal(text.includes("- insert:"), true);
+  assert.equal(topLevelInsertGroups(text), 1);
+});
+
+test("非空 flow 序列：宿主内容不动，返回 ok:false", () => {
+  const original = "[a, b]\n";
+  const dir = withTempPatch(original);
+  const fp = path.join(dir, "cordis.patch.yml");
+  const result = ensureProfileBodyInsert(dir);
+  assert.equal(result.ok, false);
+  assert.equal(result.wrote, false);
+  assert.equal(fs.readFileSync(fp, "utf8"), original);
+});
+
+test("已有 dsh-purge 本体行：零写入", () => {
+  const original = "- insert:\n    - id: dsh-purge\n      name: dsh-purge\n";
+  const dir = withTempPatch(original);
+  const fp = path.join(dir, "cordis.patch.yml");
+  const result = ensureProfileBodyInsert(dir);
+  assert.equal(result.ok, true);
+  assert.equal(result.wrote, false);
+  assert.equal(fs.readFileSync(fp, "utf8"), original);
+});
+
+test("`[]` 替换后幂等：再 ensure 一次零写入", () => {
+  const dir = withTempPatch("# c\n[]\n");
+  const fp = path.join(dir, "cordis.patch.yml");
+  const first = ensureProfileBodyInsert(dir);
+  assert.equal(first.wrote, true);
+  const healed = fs.readFileSync(fp, "utf8");
+  const second = ensureProfileBodyInsert(dir);
+  assert.equal(second.wrote, false);
+  assert.equal(fs.readFileSync(fp, "utf8"), healed);
+});
