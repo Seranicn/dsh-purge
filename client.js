@@ -183,6 +183,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"metric.purged.skip": "已写入。跳过 {n} 项，本机没有这些文件",
 			"metric.pendingShort": "待处理 {n}",
 			"metric.unmatchedShort": "没对上 {n}",
+			"metric.driftedShort": "漂移 {n}",
 			"metric.skipShort": "跳过 {n}",
 			"metric.unlocated.count": "—",
 			"metric.shim": "shim",
@@ -196,8 +197,9 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"status.off": "已关闭",
 			"status.pending": "待应用",
 			"status.unmatched": "没对上",
+			"status.drifted": "已漂移",
 			"status.skipped": "跳过",
-			"apply.hint": "没改提示词框不用点保存，默认就是这份，启动和应用会写进 prompt-inject.md。只有自己改过再点保存才会覆盖。点应用打补丁。待应用=原文还在。跳过=当前版本不需要或组件未安装。",
+			"apply.hint": "没改提示词框不用点保存，默认就是这份，启动和应用会写进 prompt-inject.md。只有自己改过再点保存才会覆盖。点应用打补丁。待应用=原文还在。跳过=当前版本不需要或组件未安装。漂移=官方原文已改，这条补丁没打上，需要更新 pattern。",
 			"flow.title": "清洗流程",
 			"flow.apply": "应用",
 			"flow.revert": "还原",
@@ -217,6 +219,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"unpack.restarting": "补丁已写入。点「重启」后客户端会自己重新打开。",
 			"restart.fullQuit": "正在重启，客户端会自己重新打开。",
 			"warn.noInject": "官方始终用默认提示词。红队开了规则集就只用规则集；没开时用去掉 CTF 的默认提示词，再接红队操作。两边都空会提示必须添加。",
+			"warn.hostVersion": "当前宿主是 {v}，插件适配的是 {t}。官方原文对不上时补丁会显示「漂移」，建议换回适配的宿主版本。",
 			"need.prompt": "提示词和规则集都是空的，必须先添加提示词，或启用一条有内容的规则集。",
 			"btn.restoreInject": "恢复默认",
 			"saved.restoreInject": "已恢复默认提示词",
@@ -541,6 +544,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"metric.purged.skip": "Written. Skipped {n}; those files are not on this install",
 			"metric.pendingShort": "Pending {n}",
 			"metric.unmatchedShort": "No match {n}",
+			"metric.driftedShort": "Drifted {n}",
 			"metric.skipShort": "Skipped {n}",
 			"metric.unlocated.count": "—",
 			"metric.shim": "shim",
@@ -554,8 +558,9 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"status.off": "Off",
 			"status.pending": "Pending",
 			"status.unmatched": "No match",
+			"status.drifted": "Drifted",
 			"status.skipped": "Skipped",
-			"apply.hint": "If you did not edit the prompt box, do not save. The default is already used and is written to prompt-inject.md on start/apply. Save only after you change it. Apply writes host patches. Pending = original text still present. Skipped = not needed for this version or the component is not installed.",
+			"apply.hint": "If you did not edit the prompt box, do not save. The default is already used and is written to prompt-inject.md on start/apply. Save only after you change it. Apply writes host patches. Pending = original text still present. Skipped = not needed for this version or the component is not installed. Drifted = the official source changed, this patch did not land and its pattern needs an update.",
 			"flow.title": "Clean flow",
 			"flow.apply": "Apply",
 			"flow.revert": "Restore",
@@ -575,6 +580,7 @@ window.__ModuleLoader__.load({ id: "dsh-purge", factory: (require) => {
 			"unpack.restarting": "Patches are written. Click Restart and the client opens again by itself.",
 			"restart.fullQuit": "Restarting. The client will open again by itself.",
 			"warn.noInject": "Official mode always uses the default prompt. Red team uses only the active rule set; otherwise it uses the default prompt without the CTF section, then the red team steps. If both are empty you will be asked to add a prompt.",
+			"warn.hostVersion": "This host is {v}, but the plugin targets {t}. When the official source no longer matches, patches show up as “drifted” — switch back to the targeted host version.",
 			"need.prompt": "Both the prompt and the rule set are empty. Add a prompt, or enable a rule that has content.",
 			"btn.restoreInject": "Reset default",
 			"saved.restoreInject": "Default prompt restored",
@@ -1152,6 +1158,7 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 			if (st === "applied" || st === "already") return "ok";
 			if (st === "pending") return "wait";
 			if (st === "unmatched") return "bad";
+			if (st === "drifted") return "bad";
 			if (st === "na") return "ok";
 			if (st === "missing_file" || st === "skipped" || st === "unlocated" || st === "off") return "miss";
 			return "bad";
@@ -1162,6 +1169,7 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 			if (st === "off") return t("status.skipped");
 			if (st === "pending") return t("status.pending");
 			if (st === "unmatched") return t("status.unmatched");
+			if (st === "drifted") return t("status.drifted");
 			if (st === "skipped") return t("status.skipped");
 			if (st === "missing_file") return t("skip");
 			if (st === "unlocated") return t("status.unlocated");
@@ -1298,12 +1306,13 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 		}
 
 		function tallyPatches(rows) {
-			const out = { applied: 0, pending: 0, unmatched: 0, skipped: 0, total: 0 };
+			const out = { applied: 0, pending: 0, unmatched: 0, skipped: 0, drifted: 0, total: 0 };
 			for (const row of rows || []) {
 				out.total += 1;
 				if (row.st === "applied" || row.st === "already") out.applied += 1;
 				else if (row.st === "pending") out.pending += 1;
 				else if (row.st === "unmatched") out.unmatched += 1;
+				else if (row.st === "drifted") out.drifted += 1;
 				else out.skipped += 1;
 			}
 			return out;
@@ -1328,6 +1337,7 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 				const notes = [];
 				if (tally.pending) notes.push(t("metric.pendingShort", { n: tally.pending }));
 				if (tally.unmatched) notes.push(t("metric.unmatchedShort", { n: tally.unmatched }));
+				if (tally.drifted) notes.push(t("metric.driftedShort", { n: tally.drifted }));
 				if (tally.skipped) notes.push(t("metric.skipShort", { n: tally.skipped }));
 				const expanded = !!open[key];
 				return h("div", { key: key, className: "dshp-group" },
@@ -2041,7 +2051,7 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 			const desktopLikely = hostSurface === "desktop" || clientGuessSurface() === "desktop";
 			const sealedReady = !located && desktopLikely && !!(s && (s.asar_still_sealed || s.desktop_exe || s.desktop_install));
 			const patchesLost = !located && !!(s && s.patches_lost);
-			const tally = located ? tallyPatches(patchRowsOf(s)) : { applied: 0, pending: 0, unmatched: 0, skipped: 0, total: 0 };
+			const tally = located ? tallyPatches(patchRowsOf(s)) : { applied: 0, pending: 0, unmatched: 0, skipped: 0, drifted: 0, total: 0 };
 			const total = tally.total;
 			const applied = tally.applied;
 			const job = s && s.apply_progress;
@@ -2054,6 +2064,7 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 			const metricNotes = [];
 			if (tally.pending) metricNotes.push(t("metric.pendingShort", { n: tally.pending }));
 			if (tally.unmatched) metricNotes.push(t("metric.unmatchedShort", { n: tally.unmatched }));
+			if (tally.drifted) metricNotes.push(t("metric.driftedShort", { n: tally.drifted }));
 			if (tally.skipped) metricNotes.push(t("metric.skipShort", { n: tally.skipped }));
 
 			const versions = (updateInfo && updateInfo.versions) || [];
@@ -2189,6 +2200,7 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 				h("p", { className: "dshp-hint", style: { margin: "8px 0 0", color: "var(--dshp-mute)", fontSize: 12 } }, t("apply.hint")),
 				s && !s.ai_base ? h("p", { className: "dshp-hint", style: { margin: "8px 0 0", color: "var(--dshp-danger, #c44)", fontSize: 12 } }, hostText(t, "warn.noRoot", hostSurface)) : null,
 				s && s.ai_base && s.override_status === "missing" ? h("p", { className: "dshp-hint", style: { margin: "8px 0 0", color: "var(--dshp-mute)", fontSize: 12 } }, t("warn.noInject")) : null,
+				s && s.ai_base && s.host_supported === false ? h("p", { className: "dshp-hint", style: { margin: "8px 0 0", color: "var(--dshp-danger, #c44)", fontSize: 12 } }, t("warn.hostVersion", { v: s.host_version || "?", t: s.host_target || "?" })) : null,
 				askRestart ? h(RestartAsk, {
 					t: t,
 					theme: detectHostTheme(),
