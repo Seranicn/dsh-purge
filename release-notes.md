@@ -1,3 +1,31 @@
+# 1.1.86
+
+## 中文
+
+- 版本 **1.1.86**。
+- **Web「应用 → 自动重启」后残留 server 导致 EADDRINUSE 起不来（#197，合并 PR #197）**：
+  - `restart-web.js` 把后台 server 的 pid/url 记到 `$DSH_HOME/dsh-purge/web-server-<port>.json`；`killOldServer` 增加按端口兜底，清掉旧版本留下、没有记录的孤儿。
+  - 新增 `lib/bin-preflight.js`：把回收钩子注入宿主 `bin.js` 顶部（跨平台），在 Cordis 激活、webserver 绑端口之前先回收残留；只杀命令行命中 `@deepseek-ai/dsh/lib/bin.js … web` 的进程。
+  - 重启时打印「后台运行、关窗不会停」，避免把提示符返回误判成程序已退出。
+  - 加固：记录里的 pid 拿不到命令行时，必须仍占着该端口才允许杀，防 PID 复用误杀；杀不掉就保留记录下次再试；杀完等待进程真正退出再绑端口。
+- **桌面端点「应用」换包顺序（#198，合并 PR #198）**：
+  - 先按安装根路径且不含 `--type=` 识别并杀掉 Electron main，再扫安装目录其余进程，避免 host 先死、main 还活着弹「host stopped」。
+  - 挪包失败（asar 仍被占用）时补上 `Start-Process`，把原版应用拉起来并写入 `%TEMP%\dsh-purge-desktop.log`，不再留空桌面。
+- 测试：96/96 通过。
+
+## English
+
+- **1.1.86**.
+- **Stale web server after "Apply → auto restart" caused EADDRINUSE on boot (#197, merged PR #197)**:
+  - `restart-web.js` records the background server pid/url in `$DSH_HOME/dsh-purge/web-server-<port>.json`; `killOldServer` now also reclaims by port, catching orphans left by older versions with no record.
+  - New `lib/bin-preflight.js` injects a reclaim hook at the top of the host `bin.js` (cross-platform) so it runs before Cordis activates and before the webserver binds; only processes whose command line matches `@deepseek-ai/dsh/lib/bin.js … web` are killed.
+  - The restart prints "running in the background; closing this window will NOT stop it" so the returned prompt is not mistaken for an exit.
+  - Hardening: when the recorded pid's command line cannot be read, it is killed only if it still listens on that port (guards against PID reuse); a failed kill keeps the record for the next boot; boot waits for the killed process to actually exit before binding.
+- **Desktop asar swap order (#198, merged PR #198)**:
+  - Electron main is identified by install root plus "no `--type=`" and killed first, then the rest of the install tree is swept, so the host no longer dies while main stays alive showing a "host stopped" dialog.
+  - If the asar move fails (still locked), the original app is relaunched and the reason is appended to `%TEMP%\dsh-purge-desktop.log` instead of leaving an empty desktop.
+- Tests: 96/96 pass.
+
 # 1.1.85
 
 ## 中文

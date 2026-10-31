@@ -11,6 +11,7 @@ import {
   parseNetstatListeners,
   readRecord,
   recordPath,
+  waitGone,
   writeRecord,
 } from "../lib/web-reclaim.js";
 
@@ -81,4 +82,19 @@ test("parseLsofPids 处理多行/空输出", () => {
   assert.deepEqual(parseLsofPids("1234\n5678\n"), [1234, 5678]);
   assert.deepEqual(parseLsofPids(""), []);
   assert.deepEqual(parseLsofPids("   \n"), []);
+});
+
+test("waitGone 对空列表/已退出 pid 立即返回", () => {
+  const t0 = Date.now();
+  waitGone([]);
+  waitGone([0, -1, 999999]);
+  assert.ok(Date.now() - t0 < 1000, "不应为已退出的进程等到超时");
+});
+
+test("preflight 侧车：记录 pid 只有仍在监听端口时才允许盲杀", () => {
+  const side = fs.readFileSync(new URL("../lib/web-preflight-entry.js", import.meta.url), "utf8");
+  assert.match(side, /const ownsPort = listeners\.includes\(recPid\)/);
+  assert.match(side, /isDshWeb\(cmd\) \|\| \(!cmd && ownsPort\)/);
+  assert.match(side, /if \(rec && !recStillAlive\)/);
+  assert.match(side, /waitGone\(killedPids\)/);
 });
