@@ -1145,6 +1145,23 @@ body[data-ds-dark-theme] .dshp-launch{background:color-mix(in srgb,var(--dsw-ali
 .dshp-dock[data-theme="white"] .dshp-dock-body .rt-err{color:#9a3434!important}
 .dshp-dock[data-theme="dusk"] .dshp-dock-body .rt-err{color:#f0b4b4!important}
 .dshp-dock-body .rt-rep-http,.dshp-dock-body pre{background:var(--rt-well)!important;color:var(--dshp-ink)!important;border:1px solid var(--dshp-line)!important}
+/* #196：暗色宿主里 --dsw-alias-brand-primary 解析为近白色（neutral-bluish-50 #f9fafb），
+   任何“品牌色作底 + 白字”的按钮都会变成白底白字。暗色下主按钮统一改用绿色实底。 */
+body[data-ds-dark-theme] .dshp-btn-primary,
+.dshp-root[data-theme="dusk"] .dshp-btn-primary,
+.dshp-dock[data-theme="dusk"] .dshp-btn-primary,
+.dshp-restart-mask[data-theme="dusk"] .dshp-btn-primary{background:#3d8f68!important;border-color:#3d8f68!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+body[data-ds-dark-theme] .dshp-btn-primary:hover:not(:disabled),
+.dshp-root[data-theme="dusk"] .dshp-btn-primary:hover:not(:disabled),
+.dshp-dock[data-theme="dusk"] .dshp-btn-primary:hover:not(:disabled),
+.dshp-restart-mask[data-theme="dusk"] .dshp-btn-primary:hover:not(:disabled){background:#347a59!important;border-color:#347a59!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+body[data-ds-dark-theme] .rt-btn-primary,
+body[data-ds-dark-theme] .rt-btn-primary:hover:not(:disabled),
+.dshp-dock[data-theme="dusk"] .rt-btn-primary,
+.dshp-dock[data-theme="dusk"] .rt-btn-primary:hover:not(:disabled),
+body[data-ds-dark-theme] .dshp-dock-body .rt-btn-primary,
+.dshp-dock[data-theme="dusk"] .dshp-dock-body .rt-btn-primary{background:#3d8f68!important;border-color:#3d8f68!important;color:#fff!important;-webkit-text-fill-color:#fff!important;backdrop-filter:none}
+body[data-ds-dark-theme] .rt-rep-step-no,.dshp-dock[data-theme="dusk"] .rt-rep-step-no{background:#3d8f68;color:#fff}
 `;
 
 		function formatSize(bytes) {

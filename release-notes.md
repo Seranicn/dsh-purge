@@ -1,3 +1,25 @@
+# 1.1.85
+
+## 中文
+
+- 版本 **1.1.85**。
+- **#196**：修复深色模式下部分按钮白底白字、完全看不清的问题。
+  - 根因：宿主暗色主题把 `--dsw-alias-brand-primary` 解析成近白色（`neutral-bluish-50` `#f9fafb`）。插件里凡是"品牌色作底 + 白字"的按钮（设置页的「应用」「保存注入」、演练台的「保存」「检索」「检测连通性」以及各类主按钮）在暗色下就变成一整块白。
+  - 现在暗色（`body[data-ds-dark-theme]`、`[data-theme="dusk"]`）下主按钮统一用绿色实底 `#3d8f68` + 白字，悬停用更深的 `#347a59`；`-webkit-text-fill-color` 一并显式指定，避免宿主强制白字穿透。
+  - 报告里的步骤序号圆点（`.rt-rep-step-no`）同样改为绿底白字。
+  - 浅色模式表现不变；新增 `test/client-dark-theme.test.js` 静态守护这几条暗色规则。
+- 测试：84/84 通过。
+
+## English
+
+- **1.1.85**.
+- **#196**: fix buttons in dark mode rendering as a solid white block (white text on white background).
+  - Root cause: the host dark theme resolves `--dsw-alias-brand-primary` to a near-white token (`neutral-bluish-50`, `#f9fafb`). Every plugin button that used "brand color as background + white text" (settings **Apply**, **Save injection**, drill console **Save**, **Search**, **Test connectivity**, and other primary buttons) turned into a white block in dark mode.
+  - Primary buttons under dark themes (`body[data-ds-dark-theme]`, `[data-theme="dusk"]`) now use a solid green `#3d8f68` with white text, with `#347a59` on hover; `-webkit-text-fill-color` is set explicitly so host-forced white text cannot leak through.
+  - The report step-number dots (`.rt-rep-step-no`) are switched to the same green/white pair.
+  - Light mode is unchanged; added `test/client-dark-theme.test.js` to guard these dark-mode rules.
+- Tests: 84/84 pass.
+
 # 1.1.84
 
 ## 中文
