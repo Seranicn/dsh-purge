@@ -2,6 +2,7 @@
 
 import * as core from "../lib/core.js";
 import * as rules from "../lib/rules.js";
+import * as reapply from "../lib/reapply.js";
 
 const args = process.argv.slice(2);
 
@@ -103,6 +104,12 @@ async function main() {
     if (failed.length > 0) {
       console.log(`✗ 完成但有 ${failed.length} 个补丁失败 / finished with ${failed.length} failed patch(es)`);
       process.exit(1);
+    }
+    // 面板点应用会打戳；CLI 也要打，否则下次启动 settle 以为没对齐又重打一遍（#202）。
+    try {
+      reapply.markPatchesApplied();
+    } catch (e) {
+      console.log(`  ⚠ 写入应用记录失败 / failed to write applied stamp: ${e && e.message ? e.message : e}`);
     }
     console.log("全部完成 / All done。重启 dsh 生效 / Restart dsh to take effect.");
   } else if (mode === "--revert") {
