@@ -9122,29 +9122,156 @@ body[data-ds-dark-theme] .rt-scope-testing,.dshp-dock[data-theme="dusk"] .rt-sco
 		}
 
 
+		/* #208：undo 按钮不再注册进 conversation.input.right。
+		   Android WebView 切后台返回时，宿主 composer 的 React 子树只要在提交阶段抛一次，
+		   整块输入框就会被卸载；把按钮挪到 body 上的 fixed 宿主 + createPortal，
+		   渲染树完全离开 composer，位置按 .standardControls 的矩形对齐。 */
+		const REWIND_HOST_ATTR = "data-dsh-purge-rewind-host";
+		const REWIND_RESERVE_PX = 64;
+
+		function rewindControlsAnchor() {
+			if (typeof document === "undefined") return null;
+			// 取最靠下的那一组：输入框在页面底部；消息工具条里的同名控件更高，别抢。
+			const list = document.querySelectorAll('[class*="standardControls"]');
+			let best = null;
+			let bestTop = -Infinity;
+			for (let i = 0; i < list.length; i += 1) {
+				const el = list[i];
+				if (el.hidden) continue;
+				const rect = el.getBoundingClientRect();
+				if (!(rect.width > 0) || !(rect.height > 0)) continue;
+				if (rect.top >= bestTop) { best = el; bestTop = rect.top; }
+			}
+			return best;
+		}
+
+		function placeRewindHost(host, anchor, reserve) {
+			if (!host || !anchor) return;
+			const rect = anchor.getBoundingClientRect();
+			if (!(rect.width > 0) || anchor.hidden) {
+				host.style.display = "none";
+				return;
+			}
+			const width = host.offsetWidth || 60;
+			const height = host.offsetHeight || 28;
+			host.style.display = "block";
+			host.style.left = Math.max(0, Math.round(rect.left + (reserve - width) / 2)) + "px";
+			host.style.top = Math.round(rect.top + (rect.height - height) / 2) + "px";
+		}
+
+		function RewindDockMount() {
+			const t = useT();
+			const [host, setHost] = useState(null);
+			const [, bump] = useState(0);
+			const sessionId = currentSessionId(rewindSessions);
+			// 没有会话时不留空位：按钮不显示，padding 也一起归还。
+			const sessionRef = useRef(null);
+			sessionRef.current = sessionId;
+			const placeRef = useRef(null);
+
+			useEffect(() => {
+				if (typeof document === "undefined") return undefined;
+				let el = document.querySelector("[" + REWIND_HOST_ATTR + "]");
+				if (!el) {
+					el = document.createElement("div");
+					el.setAttribute(REWIND_HOST_ATTR, "");
+					document.body.appendChild(el);
+				}
+				el.style.cssText = "position:fixed;z-index:2147482500;display:none;left:0;top:0;";
+				setHost(el);
+				let padded = null;
+				let warned = false;
+				let lastQuery = 0;
+				const startedAt = Date.now();
+				const place = (force) => {
+					// 缓存锚点 + 1s 节流：只有锚点缺失/掉线时才全文档查一次，
+					// 否则长会话里每帧扫 [class*=...] 会拖慢滚动。
+					if (!padded || !padded.isConnected) {
+						const now = Date.now();
+						if (force || now - lastQuery > 1000) {
+							lastQuery = now;
+							const next = rewindControlsAnchor();
+							if (padded && padded !== next) padded.style.paddingLeft = padded.dataset.dshpPad || "";
+							if (next && next !== padded) next.dataset.dshpPad = next.style.paddingLeft || "";
+							padded = next;
+						}
+					}
+					const anchor = padded;
+					if (!anchor) {
+						el.style.display = "none";
+						if (!warned && Date.now() - startedAt > 5000) {
+							warned = true;
+							try { console.warn("[dsh-purge] rewind: composer standardControls anchor missing"); } catch { /* ignore */ }
+						}
+						return;
+					}
+					// 按钮标签会随失败提示变长，预留宽度跟着实测宽度走，避免压到模型选择器。
+					const reserve = Math.max(REWIND_RESERVE_PX, (el.offsetWidth || 60) + 12);
+					const pad = sessionRef.current ? reserve + "px" : (anchor.dataset.dshpPad || "");
+					if (anchor.style.paddingLeft !== pad) anchor.style.paddingLeft = pad;
+					if (!sessionRef.current) {
+						el.style.display = "none";
+						return;
+					}
+					placeRewindHost(el, anchor, reserve);
+				};
+				place(true);
+				placeRef.current = place;
+				const onMove = () => place(false);
+				const iv = setInterval(onMove, 500);
+				window.addEventListener("resize", onMove);
+				document.addEventListener("scroll", onMove, true);
+				return () => {
+					clearInterval(iv);
+					placeRef.current = null;
+					window.removeEventListener("resize", onMove);
+					document.removeEventListener("scroll", onMove, true);
+					if (padded) {
+						padded.style.paddingLeft = padded.dataset.dshpPad || "";
+						delete padded.dataset.dshpPad;
+					}
+					try { el.remove(); } catch { /* ignore */ }
+				};
+			}, []);
+
+			// 会话切换/首次挂载时立刻对齐，不用等 500ms 定时器。
+			useEffect(() => {
+				if (placeRef.current) placeRef.current(true);
+			}, [sessionId, host]);
+
+			useEffect(() => {
+				const offs = [];
+				const watch = (store) => {
+					try {
+						if (store && typeof store.subscribe === "function") {
+							offs.push(store.subscribe(() => bump((n) => (n + 1) % 1e9)));
+						}
+					} catch { /* ignore */ }
+				};
+				watch(rewindWorkspace && rewindWorkspace.selection);
+				watch(rewindSessions && rewindSessions.list);
+				const iv = setInterval(() => bump((n) => (n + 1) % 1e9), 2000);
+				return () => {
+					for (const off of offs) { try { off(); } catch { /* ignore */ } }
+					clearInterval(iv);
+				};
+			}, []);
+
+			if (!host || !sessionId) return null;
+			try {
+				const rd = require("react-dom");
+				if (rd && typeof rd.createPortal === "function") {
+					return rd.createPortal(h(RewindSafe, { sessionId, t }), host);
+				}
+			} catch { /* host 可能没暴露 react-dom */ }
+			return null;
+		}
+
 		function installRewindUi(ctx) {
 			rewindHost = ctx;
 			rewindSessions = ctx.sessions;
 			rewindWorkspace = ctx.uiWorkspace || null;
 			rewindConversation = ctx.conversation || null;
-			ctx.slots.inject("conversation.input.right", () => ctx.slots.register({
-				name: "conversation.input.right",
-				id: "dsh-purge-rewind",
-				order: 20,
-				inject: (sessionId) => ({
-					sessionId,
-					t: ctx.locale.bind(NS),
-				}),
-			}, RewindSafe));
-			// ctx.slots.inject("conversation.input.right", () => ctx.slots.register({
-			// 	name: "conversation.input.right",
-			// 	id: "dsh-purge-continue",
-			// 	order: 21,
-			// 	inject: (sessionId) => ({
-			// 		sessionId,
-			// 		t: ctx.locale.bind(NS),
-			// 	}),
-			// }, ContinueSafe));
 			ctx.effect(() => installRewindWatch(ctx), "dsh-purge: rewind watch");
 		}
 
@@ -9201,7 +9328,7 @@ body[data-ds-dark-theme] .rt-scope-testing,.dshp-dock[data-theme="dusk"] .rt-sco
 				name: "shell.overlay",
 				id: "dsh-purge-dock",
 				order: 50,
-			}, () => h(react.Fragment, null, h(WelcomeNotice), h(PurgeLauncher), h(PurgeDock), h(HeroNewSessionMount), h(TabRowPurgeMount), h(EnvAdaptSendGate))));
+			}, () => h(react.Fragment, null, h(WelcomeNotice), h(PurgeLauncher), h(PurgeDock), h(HeroNewSessionMount), h(TabRowPurgeMount), h(EnvAdaptSendGate), h(RewindDockMount))));
 			try {
 				if (typeof ctx.inject === "function") {
 					ctx.inject(["sessions", "uiWorkspace", "workspaces", "conversation"], (host) => installRewindUi(host));
