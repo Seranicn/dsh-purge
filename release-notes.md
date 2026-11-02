@@ -1,3 +1,29 @@
+# 1.1.89
+
+## 中文
+
+- 版本 **1.1.89**。
+- **#204 工作目录提示恢复**：`deployment:persona-suffix` 优先写会话真实 cwd 字面量（`interpolate: false`），拿不到才退静态描述；同时把 `cwd` 补进 `assembly.variables`，用户自己模板里的 `{{cwd}}` 也能渲染。0.2.1 不再抛 `unknown prompt variable`，工作目录提示不再变成 `the current workspace`。
+- **#207 桌面静默退出可诊断**：
+  - 新增 #92：宿主每次退出都把 `code` / `signal` / stderr 尾巴写进 `%TEMP%\dsh-purge-desktop.log`（不再只记 signal 分支）。
+  - 新增 #93：主进程记录 `boot` / `before-quit` / `will-quit` / `quit code` / `window-all-closed` / `render-process-gone`（附渲染进程最后几行 console）/ `child-process-gone` / 信号 / 每分钟心跳。只用 `uncaughtExceptionMonitor`，不改变崩溃行为。
+  - asar 换包脚本：`Move-Item` 失败后改用 `.NET File.Move` 重试，成功/失败都 `Test-Path` 复核并记录真实错误；空闲改名脚本同样记录失败原因（限流，不刷屏）。
+- **#202 原子写**：`atomicWriteFile` 保持 `writeFile + rename`（不依赖 hostFs 白名单里没有的 `open`）；CLI `--apply` 成功后补打应用戳，下次启动 settle 不会误判未对齐再重打。
+- **修复重复标记**：#32 / #53 的 export 行锚点原来自我匹配，每点一次「应用」就多追加一行注释；改成带负向前瞻的正则，连续应用保持幂等。
+- **验证**：web + desktop 双宿主现有补丁全部 applied；rc.2 夹具与 rc.5 实机 pattern 全绿；沙箱 42 个目标文件 apply/revert 字节级还原；生成的 PowerShell 脚本通过 `Parser::ParseFile` 语法检查。
+
+## English
+
+- **1.1.89**.
+- **#204 working directory restored**: the persona suffix now uses the real session cwd as a literal (`interpolate: false`) and only falls back to the static sentence when no cwd is available; `cwd` is also added to `assembly.variables`, so user templates with `{{cwd}}` render. 0.2.1 no longer throws `unknown prompt variable`, and the prompt keeps the real path instead of `the current workspace`.
+- **#207 desktop exit is diagnosable**:
+  - New #92: every host exit writes `code` / `signal` / stderr tail to `%TEMP%\dsh-purge-desktop.log`.
+  - New #93: main process logs `boot` / `before-quit` / `will-quit` / `quit code` / `window-all-closed` / `render-process-gone` (with the renderer console tail) / `child-process-gone` / signals / a one-minute heartbeat. Uses `uncaughtExceptionMonitor` only, so crash behavior is unchanged.
+  - ASAR swap: falls back to `.NET File.Move` after `Move-Item` fails, verifies with `Test-Path`, and records the real error; the idle rename script logs failures too (rate-limited).
+- **#202 atomic writes**: `atomicWriteFile` stays on `writeFile + rename` (the hostFs whitelist has no `open`); the CLI `--apply` now also writes the applied stamp so the next boot's settle does not re-apply.
+- **Duplicate markers fixed**: the #32 / #53 export-line anchors matched their own output and appended another comment on every Apply; both now use negative lookaheads and are idempotent.
+- **Verified**: all existing patches applied on both web and desktop hosts; rc.2 fixtures and rc.5 real files green; sandbox apply/revert restored 42 target files byte-for-byte; generated PowerShell scripts pass `Parser::ParseFile`.
+
 # 1.1.88
 
 ## 中文
