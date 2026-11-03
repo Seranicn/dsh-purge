@@ -5,7 +5,7 @@
 你个人本机自用：不另外收费，遵守 LICENSE 即可。
 你拿去卖、卖课、白标、给第三方当产品：先写信给我。
 
-邮件 [dsh-purge maintainers](mailto:dsh-purge maintainers)，或 GitHub [@YuJunZhiXue](https://github.com/YuJunZhiXue)。
+邮件 [dsh-purge maintainers](mailto:dsh-purge maintainers)，或通过项目仓库 [HunYiSage/dsh-purge](https://github.com/HunYiSage/dsh-purge) 与团队频道 [t.me/LLM_PoJia](https://t.me/LLM_PoJia) 联系。
 标题：`dsh-purge 商业许可`。写清用途、是否再分发、大致规模。没有自动收银台，谈妥再签。
 
 授权不转让项目名称，也不让你对外自称官方。
