@@ -25,6 +25,7 @@
     "bin",
     "docs",
     "presets",
+    "skills",
     "scripts",
     "client.js",
     "cordis.patch.yml",

@@ -433,9 +433,9 @@ Drill を初めて開くときは、通知を読み、カウントダウンを�
 
 ## レイアウト
 
-`bin/` は CLI、`lib/` はパッチと drill コンソール、`presets/redteam/` はレッドチームプリセット、`client.js` はドックです。スキルライブラリとナレッジベースも同梱されます。
+`bin/` は CLI、`lib/` はパッチと drill コンソール、`presets/redteam/` はレッドチームプリセット、`skills/redteam/` は同梱スキル、`client.js` はドックです。
 
-ランタイムファイルは `$DSH_HOME` 以下にあります: `prompt-inject.md`、`rules/`、`redteam/`。`DSH_HOME` が未設定の場合、ランチャー横の `.dsh` が `~/.dsh` より優先されます。Web とデスクトップアプリはそれぞれ独自のホームを使います。
+ランタイムファイルは `$DSH_HOME` 以下にあります: `prompt-inject.md`、`rules/`、`skills/`、`redteam/`。`DSH_HOME` が未設定の場合、ランチャー横の `.dsh` が `~/.dsh` より優先されます。Web とデスクトップアプリはそれぞれ独自のホームを使います。
 
 ---
 

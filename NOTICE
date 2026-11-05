@@ -6,3 +6,5 @@ Maintained by the dsh-purge maintainers team.
 
 This product is licensed under the Apache License, Version 2.0.
 Derivative works must retain this NOTICE and attribution.
+
+Bundled skills under skills/redteam/ originate from the dsh-purge upstream project (YuJunZhiXue/dsh-purge), retrieved via the mirror mmparko/dsh-purge.
