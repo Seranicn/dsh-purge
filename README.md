@@ -35,10 +35,10 @@ dsh-purge was originally developed by its author as an independent project. It i
 
 The project's boundaries remain unchanged:
 
-- **The open-source build is local-lab only.** Local drills are limited to loopback and RFC1918 private addresses. Penetration, attack, or scanning against mainland China, Hong Kong and Macau, banks and financial sites, government and military sites is prohibited.
-- The open-source build does not include the skill library or knowledge base.
+- **The open-source build includes everything sold as paid content.** The skill library and knowledge base ship with it; nothing is locked behind payment.
+- Penetration, attack, or scanning against mainland China, Hong Kong and Macau, banks and financial sites, government and military sites is prohibited.
 
-**About the paid content.** The skill library and knowledge base are paid content sold separately. They are **not distributed with the open-source build** and are not part of this repository's commits, release assets, or npm package. The open-source build is everything in this repository, free to download and use; it does not include and does not unlock that paid content. Selling, delivering and supporting the paid content is handled separately by the maintainers and is independent of this repository's open-source license.
+**About the paid content.** Everything the paid build includes is included in the open-source build. No feature or data in this repository requires payment to unlock; the skill library and knowledge base are part of the open-source release.
 
 **Resale of the original build is prohibited.** Paid resale, re-skinning for store listings, and distribution as a commercial product are not permitted. Forks and derivative work are allowed provided they credit the source repository: [HunYiSage/dsh-purge](https://github.com/HunYiSage/dsh-purge). Removing the attribution, concealing the source, or presenting the project as one's own will be pursued by the maintainers. Third-party builds are not affiliated with the original author or this team; their maintainers are solely responsible for them.
 
@@ -86,7 +86,7 @@ Harness does more than forward a prompt. It rewrites prompts, approval gates, sa
 |---|---|
 | **dsh-purge dock** | A button beside the session title opens the right dock. Two pages: Clean and Drill |
 | **Clean** | Grouped patch status, Apply / Restore / Uninstall, prompt editor, multiple rule sets |
-| **Drill** | Built into the stable release. After authorization: assets and the local environment. This build does not ship skills or the knowledge base. Local lab only |
+| **Drill** | Built into the stable release. After authorization: assets and the local environment. The skill library and knowledge base ship with it. |
 | **Host policy** | Default copy, permission policy, and tool limits. Official capabilities stay. No second invented identity |
 | **On start** | Checks and reapplies. After npm overwrites `node_modules`, you do not hand-edit files |
 
@@ -419,13 +419,13 @@ The first time you open Drill you read the notice, wait out the countdown, scrol
 
 **Local lab**
 
-Penetration, attack, or scanning against mainland China, Hong Kong and Macau, banks and financial sites, government and military sites is prohibited. Local drills are limited to loopback and RFC1918 private addresses.
+Penetration, attack, or scanning against mainland China, Hong Kong and Macau, banks and financial sites, government and military sites is prohibited.
 
 | Area | What it shows |
 |---|---|
 | dsh-purge | button beside the session title; opens or collapses the dock |
 | Clean | patches, prompt, rule sets |
-| Drill | assets and environment after authorization. This build does not ship skills or the knowledge base. The tab says Unauthorized until then |
+| Drill | assets and environment after authorization. The skill library and knowledge base ship with it. The tab says Unauthorized until then |
 | Patches | grouped status, Apply, Restore, or Uninstall |
 | Prompt | edit `prompt-inject.md` as the session override |
 | Local lab | penetration of mainland China / Hong Kong / Macau, banks, government and military sites is prohibited |
@@ -435,7 +435,7 @@ Penetration, attack, or scanning against mainland China, Hong Kong and Macau, ba
 
 ## Layout
 
-`bin/` is the CLI, `lib/` is patches and the drill console, `presets/redteam/` is the red-team preset, and `client.js` is the dock. This build does not ship `skills/` or the knowledge base.
+`bin/` is the CLI, `lib/` is patches and the drill console, `presets/redteam/` is the red-team preset, and `client.js` is the dock. The skill library and knowledge base ship with it.
 
 Runtime files live under `$DSH_HOME`: `prompt-inject.md`, `rules/`, `redteam/`. If `DSH_HOME` is unset, the launcher-adjacent `.dsh` wins over `~/.dsh`. Web and the desktop app each use their own home.
 
@@ -495,7 +495,7 @@ Restart `dsh web` to load the profile. The model and reasoning defaults apply to
 
 ### Local lab
 
-Penetration, attack, or scanning against mainland China, Hong Kong and Macau, banks and financial sites, government and military sites is prohibited. Local drills are limited to loopback and RFC1918 private addresses.
+Penetration, attack, or scanning against mainland China, Hong Kong and Macau, banks and financial sites, government and military sites is prohibited.
 
 ---
 
