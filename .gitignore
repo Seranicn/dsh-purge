@@ -23,8 +23,10 @@ choirboy-prompt/
 _archive/
 频道推广手册/
 
-# 嵌入前的提示词原文
+# 提示词原文只在本地维护，任何形式都不进仓库
 lib/default-prompt-inject.md
+lib/default-prompt-inject.zh.md
+lib/default-prompt-inject.en.md
 default-prompt-inject.md
 
 # 本机官方安装包、解包目录、拆出的压缩包

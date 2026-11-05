@@ -1,3 +1,25 @@
+# 1.1.91
+
+## 中文
+
+- 版本 **1.1.91**。
+- **#220 宿主版本声明对齐 rc.5**：`package.json` 的 `dshTarget` 改为 `0.2.1-rc.5`，`dshTargets` 同时保留 `0.2.1-rc.5` 与 `0.2.1-rc.2`。状态页读主字段，不再把跑在 rc.5 上的宿主报成「未适配」；rc.2 仍然在兼容列表里。
+- **#213 应用 / 还原后 `dsh` 丢失可执行位**：`writeHostFileAtomic()` 在 `rename` 前先读目标原 mode 并 `chmod` 到临时文件，POSIX 下 `bin.js` 的 `0755` 原样保留；没有 `rename` 的抽象 fs 改为原地写并清理临时文件。WSL ext4 实测：apply → revert → apply → revert 四次，mode 始终 `755`，`dsh` 可直接执行。
+- **#211 回退按钮浮在设置页最上层**：`place()` 增加前台判定，锚点断开、`checkVisibility()` 为假、落在 `inert / aria-hidden` 里、或被 `[role="dialog"][aria-modal="true"]` 遮住时隐藏按钮并归还 composer 的 `padding-left`；宿主 `z-index` 从 `2147482500` 降到 `900`，菜单降到 `950`，稳定处在页面内容之上、宿主模态（1000）之下。Chrome 实测覆盖模态、遮挡、opacity、inert、断开锚点与层叠比较。
+- **#209 pnpm 12 反复要求构建审批**：`rewritePnpmAllowBuilds()` 按 profile 里的 pnpm 大版本决定策略——pnpm 12+（或版本判断不出）保留用户写下的来源键（`dsh-purge@git+https://…` / `@https://…`），只去重；pnpm 11 仍按 #185 清掉来源键，避免 `ERR_PNPM_INVALID_VERSION_UNION`。裸包名照旧补齐。真实 pnpm 11 / 12 配置与真实 profile 均验证。
+- **渗透范围**：禁止对中国大陆、香港、澳门，银行与金融站点，政府与军事站点发起渗透、攻击或扫描；本地演练限定在本机回环与 RFC1918 私网。游戏外挂、内存修改、注入与反作弊绕过不再拦截，提示词与会话门禁同步放开。
+- **验证**：范围判定 24 项用例全过；#209/#211/#213 单测与真实环境测试全过；`client.js` 与改动模块语法检查通过。
+
+## English
+
+- **1.1.91**.
+- **#220 host target aligned with rc.5**: `dshTarget` is now `0.2.1-rc.5`, with `0.2.1-rc.5` and `0.2.1-rc.2` both kept in `dshTargets`. The status page reads the primary field, so a host on rc.5 is no longer reported as unsupported; rc.2 stays compatible.
+- **#213 `dsh` lost its executable bit after apply/revert**: `writeHostFileAtomic()` now reads the target's existing mode and applies it to the temp file before `rename`, so `bin.js` keeps `0755` on POSIX; filesystems without `rename` fall back to an in-place write and clean up the temp file. WSL ext4 test: apply → revert → apply → revert keeps the mode at `755` and `dsh` stays executable.
+- **#211 the undo button floated above settings**: `place()` now checks whether the session surface is actually visible and hides the button (releasing the composer's `padding-left`) when the anchor is detached, fails `checkVisibility()`, sits under `inert / aria-hidden`, or is covered by `[role="dialog"][aria-modal="true"]`. The host `z-index` drops from `2147482500` to `900` and the menu to `950`, staying above page content and below the host modal (1000). Chrome tests cover modals, occlusion, opacity, inert, detached anchors and stacking.
+- **#209 pnpm 12 kept asking for build approval**: `rewritePnpmAllowBuilds()` now decides by the profile's pnpm major version. On pnpm 12+ (or when the version cannot be read) it preserves user-written source keys (`dsh-purge@git+https://…`, `@https://…`) and only deduplicates them; on pnpm 11 it still removes them per #185 to avoid `ERR_PNPM_INVALID_VERSION_UNION`. The bare package name is still ensured. Verified against real pnpm 11/12 configs and a real profile.
+- **Pentest scope**: penetration, attack, or scanning against mainland China, Hong Kong and Macau, banks and financial sites, government and military sites is prohibited; local drills are limited to loopback and RFC1918 private addresses. Game cheats, memory editing, injection and anti-cheat bypass are no longer blocked, in both the prompt layer and the session gate.
+- **Verification**: all 24 scope cases pass; unit and real-environment tests for #209/#211/#213 pass; syntax checks pass for `client.js` and the changed modules.
+
 # 1.1.90
 
 ## 中文
