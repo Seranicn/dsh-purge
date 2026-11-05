@@ -38,6 +38,8 @@ The project's boundaries remain unchanged:
 - **The open-source build is local-lab only.** Local drills are limited to loopback and RFC1918 private addresses. Penetration, attack, or scanning against mainland China, Hong Kong and Macau, banks and financial sites, government and military sites is prohibited.
 - The open-source build does not include the skill library or knowledge base.
 
+**About the paid content.** The skill library and knowledge base are paid content sold separately. They are **not distributed with the open-source build** and are not part of this repository's commits, release assets, or npm package. The open-source build is everything in this repository, free to download and use; it does not include and does not unlock that paid content. Selling, delivering and supporting the paid content is handled separately by the maintainers and is independent of this repository's open-source license.
+
 **Resale of the original build is prohibited.** Paid resale, re-skinning for store listings, and distribution as a commercial product are not permitted. Forks and derivative work are allowed provided they credit the source repository: [HunYiSage/dsh-purge](https://github.com/HunYiSage/dsh-purge). Removing the attribution, concealing the source, or presenting the project as one's own will be pursued by the maintainers. Third-party builds are not affiliated with the original author or this team; their maintainers are solely responsible for them.
 
 Official channels: this repository's [Issues](https://github.com/HunYiSage/dsh-purge/issues) and [Releases](https://github.com/HunYiSage/dsh-purge/releases), plus the team channel [t.me/LLM_PoJia](https://t.me/LLM_PoJia). No other channel, group, or account is run by the team.
