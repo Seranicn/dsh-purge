@@ -1,3 +1,21 @@
+# 1.1.92
+
+## 中文
+
+- 版本 **1.1.92**。
+- **随包技能库并入开源版**：`skills/redteam/*.md` 共 23 条红队技能随包发布（主动扫描、内网 fscan/gogo、隧道、横向、Web 指纹、nuclei、Webshell、反弹 Shell 等）。来源为上游 dsh-purge 项目，经 `mmparko/dsh-purge` 镜像取回，已原样并入并在 `NOTICE` 注明出处。
+- **打包范围**：`package.json` 的 `files` 增加 `skills`，npm 包与 Release 压缩包均包含；插件启动时仍按原逻辑把包内技能同步到 `$DSH_HOME/redteam/skills`，宿主技能目录 `$DSH_HOME/skills` 优先。
+- **知识库说明**：POC/EXP 知识库不是随包文件，而是运行时生成的本地数据库，条目来自本机 nuclei 模板与手工录入；相关代码（`lib/redteam/store-core.js`、`ui.js`、`tools.js`）一直在仓库里，本次无需迁移。
+- **文档**：三份 README 的目录结构与运行时目录同步补上 `skills/`；边界说明写明开源版包含付费版的全部功能与内容。
+
+## English
+
+- **1.1.92**.
+- **Bundled skills are now part of the open-source build**: 23 red-team skills ship under `skills/redteam/*.md` (active scanning, intranet fscan/gogo, tunneling, lateral movement, web fingerprinting, nuclei, webshell, reverse shells and more). They come from the upstream dsh-purge project, retrieved via the `mmparko/dsh-purge` mirror, copied unchanged, and credited in `NOTICE`.
+- **Packaging**: `package.json` `files` now lists `skills`, so both the npm package and the release archive include it. On startup the plugin still syncs the bundled skills into `$DSH_HOME/redteam/skills`, with the host skill directory `$DSH_HOME/skills` taking priority.
+- **Knowledge base note**: the POC/EXP knowledge base is not a shipped file. It is a local database built at runtime from the machine's nuclei templates and manual entries; the code (`lib/redteam/store-core.js`, `ui.js`, `tools.js`) has always been in the repository, so nothing needed to move.
+- **Docs**: all three READMEs now list `skills/` in the directory structure and runtime paths; the boundaries section states that the open-source build includes everything in the paid build.
+
 # 1.1.91
 
 ## 中文
