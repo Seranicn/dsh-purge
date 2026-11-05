@@ -39,9 +39,23 @@ dsh-purge 最初由原作者独立开发。项目现已由 **dsh-purge 维护团
 - **禁止制作游戏外挂。** 包括自瞄、透视、内存修改与反作弊绕过，提示词与会话入口双重拦截。
 - 开源版不包含技能库与知识库。
 
-**原版禁止倒卖。** 不得付费转售、换皮上架，或以商品形式分销。允许二次开发，但必须署名并注明来源仓库：[HunYiSage/dsh-purge](https://github.com/HunYiSage/dsh-purge)。未署名、隐瞒来源，或改头换面据为己有的，维护团队将依法追究责任。
+**原版禁止倒卖。** 不得付费转售、换皮上架，或以商品形式分销。允许二次开发，但必须署名并注明来源仓库：[HunYiSage/dsh-purge](https://github.com/HunYiSage/dsh-purge)。未署名、隐瞒来源，或改头换面据为己有的，维护团队将依法追究责任。任何第三方二开版本与原作者及本团队无关，相关责任由该第三方自行承担。
 
-团队频道：[t.me/LLM_PoJia](https://t.me/LLM_PoJia)，用于发布通知与更新。
+官方渠道：本仓库的 [Issues](https://github.com/HunYiSage/dsh-purge/issues) 与 [Releases](https://github.com/HunYiSage/dsh-purge/releases)。原团队 Telegram 频道已解散，此后不再使用任何 Telegram 频道或外部群组发布通知。
+
+> **⚠️ 关于冒充原作者、二次开发与收费诈骗的声明（2026-11-05）**
+>
+> 近期有账号冒充原作者「小杨」与本维护团队，使用近似昵称、头像和账号名，建立群组，以「作者本人」「项目众筹」「付费更新」等名义收费、募捐，并传播涉及原作者的个人信息。上述账号与群组均与原作者及本团队无关。
+>
+> **任何第三方二次开发（二开、二改、换皮、搬运、重新打包）均与原作者及本团队无授权、无隶属关系。** 其代码改动、收费、数据与售后由发布者自行负责；冒用作者名义收费属于冒名侵权。按许可证二开必须署名并注明来源，不得倒卖原版。
+>
+> 原作者已就冒名收费与个人信息泄露报警，团队全程配合，证据已移交警方；原作者本人也已在其个人账号发布声明。出于对原作者个人信息和案件本身的保护，回执与相关截图不在公开渠道展示。
+>
+> **官方渠道只有本仓库：** [HunYiSage/dsh-purge](https://github.com/HunYiSage/dsh-purge)（Issues / Releases）。原团队 Telegram 频道已解散；团队不会通过私人账号、群组或私聊收费、募捐、索要个人信息。开源版免费，商业授权只走 [LICENSE-COMMERCIAL.md](./LICENSE-COMMERCIAL.md)。
+>
+> 请不要向任何非官方账号转账，也不要转发涉及原作者个人信息的截图。遇到冒充，截图后向对应平台举报。
+>
+> 感谢大家对「小码酱」的支持。谨防上当受骗。
 
 ## 目录
 
@@ -593,7 +607,7 @@ flowchart TD
 
 ## 更新
 
-团队频道：[t.me/LLM_PoJia](https://t.me/LLM_PoJia)。有话、有更新会发在那里。GitHub [Releases](https://github.com/HunYiSage/dsh-purge/releases) 仍可下历史包。原版不允许倒卖；二开必须署名。
+更新通过 GitHub [Releases](https://github.com/HunYiSage/dsh-purge/releases) 发布，历史包同样在这里。原团队 Telegram 频道已解散，原地址若被他人使用，与团队无关。原版不允许倒卖；二开必须署名并注明来源，第三方二开与原作者及本团队无关。
 
 ## 说明
 

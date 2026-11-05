@@ -39,9 +39,23 @@ The project's boundaries remain unchanged:
 - **Game cheats are prohibited**, including aimbots, wallhacks, memory modification, and anti-cheat bypass; both the prompt layer and the session gate enforce this.
 - The open-source build does not include the skill library or knowledge base.
 
-**Resale of the original build is prohibited.** Paid resale, re-skinning for store listings, and distribution as a commercial product are not permitted. Forks and derivative work are allowed provided they credit the source repository: [HunYiSage/dsh-purge](https://github.com/HunYiSage/dsh-purge). Removing the attribution, concealing the source, or presenting the project as one's own will be pursued by the maintainers.
+**Resale of the original build is prohibited.** Paid resale, re-skinning for store listings, and distribution as a commercial product are not permitted. Forks and derivative work are allowed provided they credit the source repository: [HunYiSage/dsh-purge](https://github.com/HunYiSage/dsh-purge). Removing the attribution, concealing the source, or presenting the project as one's own will be pursued by the maintainers. Third-party builds are not affiliated with the original author or this team; their maintainers are solely responsible for them.
 
-Team channel: [t.me/LLM_PoJia](https://t.me/LLM_PoJia), used for announcements and updates.
+Official channels: this repository's [Issues](https://github.com/HunYiSage/dsh-purge/issues) and [Releases](https://github.com/HunYiSage/dsh-purge/releases). The team's former Telegram channel has been dissolved; no Telegram channel or external group is used for announcements.
+
+> **⚠️ Notice: impersonation, modified builds and payment scams (2026-11-05)**
+>
+> Accounts and groups are impersonating the original author ("Xiao Yang") and the dsh-purge maintainers. They use look-alike names and avatars, run chat groups, charge or fundraise in the author's name, and spread the author's personal information. None of them are affiliated with the author or this team.
+>
+> **Third-party modified builds (forks, repacks, rebrands) have no authorization or affiliation from the original author or this team.** Their code changes, fees, data handling, support and legal responsibility belong to their publishers. Using the author's name to sell them is impersonation. Forks must attribute and link back to this repository; resale of the original build is prohibited.
+>
+> The original author has reported the impersonation and personal-data leak to the police; the maintainers are cooperating fully and the evidence has been handed over. The author has also posted a statement on their own account. Out of respect for the author's privacy and the case itself, the police receipt and related screenshots are not published.
+>
+> **The only official channel is this repository:** [HunYiSage/dsh-purge](https://github.com/HunYiSage/dsh-purge) (Issues / Releases). The team's former Telegram channel has been dissolved; the team never charges, fundraises, or asks for personal information through personal accounts, groups, or DMs. The open-source build is free; commercial licensing goes through [LICENSE-COMMERCIAL.md](./LICENSE-COMMERCIAL.md).
+>
+> Do not send money to unofficial accounts, and do not reshare screenshots containing the author's personal information. Report impersonations to the platform.
+>
+> Thanks for supporting 小码酱. Stay safe.
 
 ## Contents
 
@@ -585,7 +599,7 @@ If nothing is found, set `DSH_BASE` / `DSH_DESKTOP_INSTALL`. No files are change
 
 ## Releases
 
-Team channel: [t.me/LLM_PoJia](https://t.me/LLM_PoJia), used for announcements and updates. GitHub [Releases](https://github.com/HunYiSage/dsh-purge/releases) still hosts older packages. Resale of the original build is prohibited; forks must attribute.
+Updates are published through GitHub [Releases](https://github.com/HunYiSage/dsh-purge/releases), including older packages. The team's former Telegram channel has been dissolved; any later use of that address is not the team's. Resale of the original build is prohibited; forks must attribute, and third-party builds are not affiliated with the original author or this team.
 
 ## Notes
 
